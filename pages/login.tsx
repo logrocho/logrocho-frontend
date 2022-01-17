@@ -5,20 +5,27 @@ import React from "react";
 import * as Yup from "yup";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
-const LoginSchema = Yup.object().shape({
-  email: Yup.string().required("El email es obligatorio").email(),
+// const LoginSchema = Yup.object().shape({
+//   email: Yup.string().required("El email es obligatorio").email(),
 
-  password: Yup.string()
-    .min(8, "La contraseña tiene que tener al menos 8 caracteres")
-    .matches(
-      /^[a-zA-Z0-9]{8,}$/,
-      "La contraseña tiene que tener una minúscula, una mayúscula y un dígito"
-    )
-    .required("La contraseña es obligatoria"),
-});
+//   password: Yup.string()
+//     .min(8, "La contraseña tiene que tener al menos 8 caracteres")
+//     .matches(
+//       /^[a-zA-Z0-9]{8,}$/,
+//       "La contraseña tiene que tener una minúscula, una mayúscula y un dígito"
+//     )
+//     .required("La contraseña es obligatoria"),
+// });
 
 function Login(): JSX.Element {
+
+  const router = useRouter();
+
+
   return (
     <React.Fragment>
       <Head>
@@ -29,14 +36,29 @@ function Login(): JSX.Element {
 
       <div className="h-screen overflow-auto bg-slate-50">
         <div className="max-w-lg mx-auto mt-20">
-          <h1 className="text-black font-roboto font-black text-2xl mb-3 ml-2">
+          <h1 className="text-black font-roboto font-black text-2xl mb-3 ml-6">
             Logrocho
           </h1>
           <Formik
             initialValues={{ email: "", password: "" }}
-            validationSchema={LoginSchema}
+            // validationSchema={LoginSchema}
             onSubmit={async (values, { setSubmitting }) => {
-              console.log(values);
+              const api = await axios({
+                method: "POST",
+
+                url: "/api/login",
+
+                data: {
+                  email: values.email,
+
+                  password: values.password,
+                },
+              });
+
+              Cookies.set("user_token", api.data, { expires: 2 });
+
+              router.push('/admin');
+
             }}
           >
             {({
@@ -53,7 +75,7 @@ function Login(): JSX.Element {
                 className="px-6 py-10 bg-white border shadow-xl rounded-md m-2"
               >
                 <p className="text-slate-700 font-medium font-roboto text-xl mb-6 ml-px">
-                  Inicia sesion en tu cuenta
+                  Iniciar sesion en tu cuenta
                 </p>
 
                 <div className="mb-6">
