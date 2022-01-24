@@ -8,6 +8,7 @@ import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import { useState } from "@hookstate/core";
 
 // const LoginSchema = Yup.object().shape({
 //   email: Yup.string().required("El email es obligatorio").email(),
@@ -21,10 +22,22 @@ import { useRouter } from "next/router";
 //     .required("La contraseña es obligatoria"),
 // });
 
-function Login(): JSX.Element {
+// validationSchema: Yup.object({
+//   username: Yup.string()
+//     .min(8, 'Must be at least 8 characters')
+//     .max(20, 'Must be less  than 20 characters')
+//     .required('Username is required')
+//     .matches(
+//       /^[a-zA-Z0-9]+$/,
+//       'Cannot contain special characters or spaces'
+//     ),
+// }),
+// });
 
+function Login(): JSX.Element {
   const router = useRouter();
 
+  const loginError = useState<Boolean>(false);
 
   return (
     <React.Fragment>
@@ -36,6 +49,21 @@ function Login(): JSX.Element {
 
       <div className="h-screen overflow-auto bg-slate-50">
         <div className="max-w-lg mx-auto mt-20">
+          <div
+            className={`${
+              loginError.get()
+                ? "animate-bounce px-10 py-5 border border-red-600 bg-red-300 rounded-md my-10 space-y-1"
+                : "hidden"
+            }`}
+          >
+            <p className="uppercase bg-transparent text-2xl text-red-600 font-roboto font-bold text-center">
+              Error, usuario inexistente
+            </p>
+            <p className="bg-transparent text-xl text-red-600 font-roboto font-light text-center">
+              Comprueba que los datos introducidos sean correctos
+            </p>
+          </div>
+
           <h1 className="text-black font-roboto font-black text-2xl mb-3 ml-6">
             Logrocho
           </h1>
@@ -43,7 +71,8 @@ function Login(): JSX.Element {
             initialValues={{ email: "", password: "" }}
             // validationSchema={LoginSchema}
             onSubmit={async (values, { setSubmitting }) => {
-              const api = await axios({
+              
+              await axios({
                 method: "POST",
 
                 url: "/api/login",
@@ -53,11 +82,25 @@ function Login(): JSX.Element {
 
                   password: values.password,
                 },
+
+              }).then(function (response){
+
+                if(response.data){
+
+                  Cookies.set("user_token", response.data, { expires: 1 });
+
+                  router.push("/admin");
+
+                }
+
+              }).catch(function (error){
+
+                if(!error.response.data.status){
+
+                  loginError.set(true);
+
+                }
               });
-
-              Cookies.set("user_token", api.data, { expires: 2 });
-
-              router.push('/admin');
 
             }}
           >
@@ -74,14 +117,14 @@ function Login(): JSX.Element {
                 onSubmit={handleSubmit}
                 className="px-6 py-10 bg-white border shadow-xl rounded-md m-2"
               >
-                <p className="text-slate-700 font-medium font-roboto text-xl mb-6 ml-px">
+                <p className="text-slate-700 bg-white font-medium font-roboto text-xl mb-6 ml-px">
                   Iniciar sesion en tu cuenta
                 </p>
 
-                <div className="mb-6">
+                <div className="mb-6 bg-transparent">
                   <label
                     htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900 dark:text-gray-300"
                   >
                     Email
                   </label>
@@ -89,21 +132,21 @@ function Login(): JSX.Element {
                     as="input"
                     type="email"
                     name="email"
-                    className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required
                   />
                 </div>
 
-                <div className="mb-6">
-                  <div className="flex flex-wrap items-baseline justify-between">
+                <div className="mb-6 bg-transparent">
+                  <div className="flex flex-wrap items-baseline justify-between bg-transparent">
                     <label
                       htmlFor="password"
-                      className="block mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="block mb-2 mr-2 bg-transparent text-sm font-medium text-gray-900 dark:text-gray-300"
                     >
                       Contraseña
                     </label>
                     <Link href={"/recover"} as={"/recover"}>
-                      <a className="text-green-400 font-roboto font-semibold text-xs mr-2">
+                      <a className="text-green-400 bg-transparent font-roboto font-semibold text-xs mr-2">
                         ¿Has olvidado la contraseña?
                       </a>
                     </Link>

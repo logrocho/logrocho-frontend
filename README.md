@@ -1,14 +1,18 @@
-# logrocho-frontend
+# Logrocho Frontend
+
+Frontend desarrollado en [Nextjs](https://nextjs.org/) para la plataforma "Logrocho".
 
 ## Iniciar Proyecto
 
-### Requerimientos
+### Requisitos
 
-Nodejs >= 16
+1. Nodejs >= 16
+
+2. Backend en XAMPP o WAMP
 
 ### Instalar dependencias
 
-Abrir la terminal en el proyecto y ejecutar
+Abre un terminal y ejecuta:
 
 ```bash
 
@@ -18,7 +22,12 @@ npm install
 
 ### Iniciar servidor de desarrollo
 
+⚠️ Advertencia, edita el fichero lib/const.ts y en la constante API_URL añade la ruta {XAMPP o WAMP}/index.php/api/ ⚠️
+
+Abre un terminal y ejecuta:
+
 ```bash
+
 npm run dev
 
 ```

@@ -8,9 +8,9 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
 
     const { email } = req.body;
 
-    const { password } = req.body;
+    const { password } = req.body;    
 
-    const api_data = await axios({
+    await axios({
       
       method: "POST",
 
@@ -23,19 +23,23 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
         password: password,
       },
 
-    });
+    }).then(function (response){
 
-    const jwt = api_data.data;
+      if(response.data.status){
 
-    if(jwt.result){
+        res.status(200).send(response.data.data);
 
-      res.status(200).json(jwt.token);
+      }
 
-    }else{
+    }).catch(function (error) {
 
-      res.status(405).end("Error al procesar la peticion, intentalo mas tarde");
+      if(!error.response.data.status){
 
-    }
+        res.status(404).json(error.response.data);
+
+      }
+
+    })
 
   } else {
 

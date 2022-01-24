@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import { Autoplay, Navigation, Pagination } from "swiper";
+import Layout from "../components/Layout";
 
 function LoginButton() {
   return (
@@ -21,6 +22,7 @@ function LoginButton() {
 function LogoutButton() {
   return (
     <div>
+
       <button
         onClick={(e) => {
           Cookies.remove("user_token");
@@ -181,11 +183,14 @@ function Index(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Layout>
+
       <div className="container mx-auto">
         <div className="mt-10 text-center">
           {Cookies.get("user_token") ? LogoutButton() : LoginButton()}
         </div>
       </div>
+      </Layout>
     </React.Fragment>
   );
 }
