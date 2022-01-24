@@ -21,7 +21,7 @@ function LoginButton() {
 
 function LogoutButton() {
   return (
-    <div>
+    <React.Fragment>
 
       <button
         onClick={(e) => {
@@ -170,7 +170,7 @@ function LogoutButton() {
       </div>
 
 
-    </div>
+    </React.Fragment>
   );
 }
 
@@ -187,7 +187,7 @@ function Index(): JSX.Element {
 
       <div className="container mx-auto">
         <div className="mt-10 text-center">
-          {Cookies.get("user_token") ? LogoutButton() : LoginButton()}
+          {Cookies.get("user_token") ? <LogoutButton/> : <LoginButton/>}
         </div>
       </div>
       </Layout>

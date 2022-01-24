@@ -33,3 +33,11 @@ npm run dev
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
+
+
+### Consideraciones
+
+Para poder acceder a ciertas paginas hay que iniciar sesion.
+
+email: correo@test.com
+password: admin
