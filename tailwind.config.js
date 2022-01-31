@@ -6,9 +6,8 @@ module.exports = {
   theme: {
     fontFamily: {
       roboto: "'Roboto', sans-serif",
-      caveat: "'Caveat', cursive"
+      caveat: "'Caveat', cursive",
     },
     extend: {},
   },
-  plugins: [require("@themesberg/flowbite/plugin")],
 };

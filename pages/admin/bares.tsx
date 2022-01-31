@@ -122,7 +122,7 @@ export default function Page(): JSX.Element {
                 data?.data.length === 0 && lastDirection.get() === "anterior"
                   ? " bg-green-300 "
                   : " bg-green-600 "
-              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
+              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-3 rounded-md shadow-md`}
               disabled={
                 data?.data.length === 0 && lastDirection.get() === "anterior"
               }
@@ -137,7 +137,7 @@ export default function Page(): JSX.Element {
                 Numero de resultados:
               </label>
               <select
-                className="shadow-md rounded-md m-2"
+                className="shadow-md rounded-md m-2 px-6 py-3"
                 name="paginacion"
                 id="paginacion"
                 onChange={(e) => {
@@ -167,7 +167,7 @@ export default function Page(): JSX.Element {
               Siguiente
             </button>
           </div>
-          <div className="overflow-auto rounded-lg shadow-md bg-white border-l-2 border-t-2 border-r-2">
+          <div className="rounded-lg shadow-md bg-white border-l-2 border-t-2 border-r-2">
             {data?.data.length === 0 ? (
               "no hay mas data"
             ) : !data ? (
@@ -181,13 +181,13 @@ export default function Page(): JSX.Element {
                 <p>Error, no se han podido obtener los datos</p>
               </div>
             ) : (
-              <table className="w-full">
+              <table className="table-auto w-full">
                 <thead className="bg-gray-100 dark:bg-gray-700">
-                  <tr className="border-b-2">
+                  <tr className="border-b-2 ">
                     <th
                       id="id"
                       onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                      className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
                     >
                       id
                       {order.get() === "id" ? "(" + direction.get() + ")" : ""}
@@ -222,9 +222,6 @@ export default function Page(): JSX.Element {
                         ? "(" + direction.get() + ")"
                         : ""}
                     </th>
-                    <th className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white">
-                      img
-                    </th>
                     <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
                       Administrar
                     </th>
@@ -243,11 +240,8 @@ export default function Page(): JSX.Element {
                         <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
                           {bar.localizacion}
                         </td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
                           {bar.informacion}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          aqui va la imagen
                         </td>
                         <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
                           <button
@@ -278,6 +272,9 @@ export default function Page(): JSX.Element {
               </table>
             )}
           </div>
+            <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md">
+              Nueva fila
+            </button>
         </div>
       </div>
     </React.Fragment>

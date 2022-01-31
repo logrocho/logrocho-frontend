@@ -123,7 +123,7 @@ export default function Page(): JSX.Element {
                 data?.data.length === 0 && lastDirection.get() === "anterior"
                   ? " bg-green-300 "
                   : " bg-green-600 "
-              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
+              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-3 rounded-md shadow-md`}
               disabled={
                 data?.data.length === 0 && lastDirection.get() === "anterior"
               }
@@ -160,7 +160,7 @@ export default function Page(): JSX.Element {
                 data?.data.length === 0 && lastDirection.get() === "siguiente"
                   ? " bg-green-300 "
                   : " bg-green-600 "
-              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
+              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-3 rounded-md shadow-md`}
               disabled={
                 data?.data.length === 0 && lastDirection.get() === "siguiente"
               }
