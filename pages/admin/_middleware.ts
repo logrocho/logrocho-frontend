@@ -9,6 +9,12 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
     if(data.data.rol === 'admin'){
 
+      if(req.nextUrl.pathname === '/admin'){
+
+        return NextResponse.redirect("/admin/bares");
+
+      }
+
       return NextResponse.next();
   
     } else {

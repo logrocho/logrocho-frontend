@@ -9,21 +9,19 @@
 }
 
 @layer components {
-
-  .admin_nav_btn_active{
-    @apply bg-green-600 border-4 border-green-600 text-white text-xl font-semibold font-roboto uppercase py-4 px-12 rounded-md shadow-md;
+  .admin_nav_active {
+    @apply w-32 text-center py-2 bg-green-600 border-4 border-green-600 text-white text-xl font-semibold font-roboto uppercase rounded-md shadow-md;
   }
 
-  .admin_nav_btn_inactive{
-    @apply bg-white border-4 border-green-600 text-green-600 text-xl font-semibold font-roboto uppercase py-4 px-12 rounded-md shadow-md;
+  .admin_nav {
+    @apply w-32 text-center py-2 bg-white border-4 border-green-600 text-green-600 text-xl font-semibold font-roboto uppercase rounded-md shadow-md;
   }
 
-  .navBar_a_desktop{
-    @apply px-5 py-2 bg-green-400 text-sm font-medium text-white rounded-md hover:bg-gradient-to-tr hover:from-green-400 hover:to-green-500
+  .navBar_a_desktop {
+    @apply px-5 py-2 bg-green-400 text-sm font-medium text-white rounded-md hover:bg-gradient-to-tr hover:from-green-400 hover:to-green-500;
   }
 
-  .navBar_a_mobile{
-    @apply px-5 py-2 block bg-green-400 text-sm font-medium text-white rounded-md hover:bg-gradient-to-tr hover:from-green-400 hover:to-green-500
+  .navBar_a_mobile {
+    @apply px-5 py-2 block bg-green-400 text-sm font-medium text-white rounded-md hover:bg-gradient-to-tr hover:from-green-400 hover:to-green-500;
   }
-
 }

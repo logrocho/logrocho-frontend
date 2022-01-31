@@ -10,30 +10,6 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState } from "@hookstate/core";
 
-// const LoginSchema = Yup.object().shape({
-//   email: Yup.string().required("El email es obligatorio").email(),
-
-//   password: Yup.string()
-//     .min(8, "La contraseña tiene que tener al menos 8 caracteres")
-//     .matches(
-//       /^[a-zA-Z0-9]{8,}$/,
-//       "La contraseña tiene que tener una minúscula, una mayúscula y un dígito"
-//     )
-//     .required("La contraseña es obligatoria"),
-// });
-
-// validationSchema: Yup.object({
-//   username: Yup.string()
-//     .min(8, 'Must be at least 8 characters')
-//     .max(20, 'Must be less  than 20 characters')
-//     .required('Username is required')
-//     .matches(
-//       /^[a-zA-Z0-9]+$/,
-//       'Cannot contain special characters or spaces'
-//     ),
-// }),
-// });
-
 function Login(): JSX.Element {
   const router = useRouter();
 
@@ -78,7 +54,7 @@ function Login(): JSX.Element {
                 url: "/api/login",
 
                 data: {
-                  email: values.email,
+                  correo: values.email,
 
                   password: values.password,
                 },

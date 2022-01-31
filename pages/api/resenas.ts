@@ -2,7 +2,7 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { API_URL } from "../../lib/const";
 
-async function bares(req: NextApiRequest, res: NextApiResponse) {
+async function resenas(req: NextApiRequest, res: NextApiResponse) {
   
   if (req.method === "GET") {
     
@@ -20,9 +20,7 @@ async function bares(req: NextApiRequest, res: NextApiResponse) {
 
       method: "GET",
 
-      url:
-
-        API_URL + `bares?limit=${limit}&offset=${offset}&key=${key}&order=${order}&direction=${direction}`,
+      url: API_URL + `resenas?limit=${limit}&offset=${offset}&key=${key}&order=${order}&direction=${direction}`,
 
     })
       .then(function (response) {
@@ -53,4 +51,4 @@ async function bares(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default bares;
+export default resenas;
