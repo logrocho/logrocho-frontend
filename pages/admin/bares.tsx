@@ -168,113 +168,103 @@ export default function Page(): JSX.Element {
             </button>
           </div>
           <div className="rounded-lg shadow-md bg-white border-l-2 border-t-2 border-r-2">
-            {data?.data.length === 0 ? (
-              "no hay mas data"
-            ) : !data ? (
-              <div className="p-10 bg-white ">
-                <p className="text-left font-roboto font-light text-black text-3xl bg-transparent">
-                  Cargando...
-                </p>
-              </div>
-            ) : error ? (
-              <div className="text-red font-roboto text-5xl p-10 text-center bg-white">
-                <p>Error, no se han podido obtener los datos</p>
-              </div>
-            ) : (
-              <table className="table-auto w-full">
-                <thead className="bg-gray-100 dark:bg-gray-700">
-                  <tr className="border-b-2 ">
-                    <th
-                      id="id"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      id
-                      {order.get() === "id" ? "(" + direction.get() + ")" : ""}
-                    </th>
-                    <th
-                      id="nombre"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      nombre
-                      {order.get() === "nombre"
-                        ? "(" + direction.get() + ")"
-                        : ""}
-                    </th>
-                    <th
-                      id="localizacion"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      localizacion
-                      {order.get() === "localizacion"
-                        ? "(" + direction.get() + ")"
-                        : ""}
-                    </th>
-                    <th
-                      id="informacion"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      informacion
-                      {order.get() === "informacion"
-                        ? "(" + direction.get() + ")"
-                        : ""}
-                    </th>
-                    <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
-                      Administrar
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.data.map((bar: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr className="border-b-2">
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {bar.id}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {bar.nombre}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {bar.localizacion}
-                        </td>
-                        <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {bar.informacion}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
-                          <button
-                            onClick={() => mostrarForm(index)}
-                            className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
-                          >
-                            Ver ficha
-                          </button>
-                          <button
-                            onClick={() => mostrarForm(index)}
-                            className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
-                          >
-                            Eliminar
-                          </button>
+            {error ? <div>Error al obtener los datos</div> : null}
+
+            {!data ? <div>Cargando....</div> : null}
+
+            <table className="table-auto w-full">
+              <thead className="bg-gray-100 dark:bg-gray-700">
+                <tr className="border-b-2 ">
+                  <th
+                    id="id"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    id
+                    {order.get() === "id" ? "(" + direction.get() + ")" : ""}
+                  </th>
+                  <th
+                    id="nombre"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    nombre
+                    {order.get() === "nombre"
+                      ? "(" + direction.get() + ")"
+                      : ""}
+                  </th>
+                  <th
+                    id="localizacion"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    localizacion
+                    {order.get() === "localizacion"
+                      ? "(" + direction.get() + ")"
+                      : ""}
+                  </th>
+                  <th
+                    id="informacion"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    informacion
+                    {order.get() === "informacion"
+                      ? "(" + direction.get() + ")"
+                      : ""}
+                  </th>
+                  <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
+                    Administrar
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.data.bares.map((bar: any, index: number) => (
+                  <React.Fragment key={index}>
+                    <tr className="border-b-2">
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {bar.id}
+                      </td>
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {bar.nombre}
+                      </td>
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {bar.localizacion}
+                      </td>
+                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {bar.informacion}
+                      </td>
+                      <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
+                        <button
+                          onClick={() => mostrarForm(index)}
+                          className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
+                        >
+                          Ver ficha
+                        </button>
+                        <button
+                          onClick={() => mostrarForm(index)}
+                          className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+
+                    {showForm.get() && form.get() === index ? (
+                      <tr>
+                        <td colSpan={6} className="bg-green-50">
+                          <BarForm Bardata={bar} />
                         </td>
                       </tr>
-
-                      {showForm.get() && form.get() === index ? (
-                        <tr>
-                          <td colSpan={6} className="bg-green-50">
-                            <BarForm data={bar} />
-                          </td>
-                        </tr>
-                      ) : null}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                    ) : null}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
           </div>
-            <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md">
-              Nueva fila
-            </button>
+          <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md">
+            Nueva fila
+          </button>
         </div>
       </div>
     </React.Fragment>

@@ -1,30 +1,100 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
+import Select, {
+  StylesConfig,
+  components,
+  MultiValueRemoveProps,
+  MultiValueGenericProps,
+  ContainerProps,
+  ControlProps,
+  IndicatorsContainerProps,
+  GroupBase,
+} from "react-select";
+import makeAnimated from "react-select/animated";
+import Async, { useAsync } from "react-select/async";
+import AsyncSelect from "react-select/async";
 
-export default function BarForm({ data }: any) {
+import useSWR from "swr";
+import { useState } from "@hookstate/core";
+import axios from "axios";
+import { GiKetchup } from "react-icons/gi";
+import { AiFillCloseCircle } from "react-icons/ai";
+
+export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
-    email: Yup.string().required("El email es obligatorio").email(),
+    nombre: Yup.string()
+      .min(4, "El nombre tiene que tener mas de 4 letras")
+      .max(15, "El nombre no puede tener mas de 15 letras")
+      .required("El nombre no puede estar vacio"),
 
-    password: Yup.string()
-      .min(8, "La contraseña tiene que tener al menos 8 caracteres")
-      .matches(
-        /^[a-zA-Z0-9]{8,}$/,
-        "La contraseña tiene que tener una minúscula, una mayúscula y un dígito"
-      )
-      .required("La contraseña es obligatoria"),
+    localizacion: Yup.string()
+      .min(10, "La localizacion tiene que tener mas de 10 letras")
+      .max(30, "La localizacion no puede tener mas de 30 letras")
+      .required("La localizacion no puede estar vacia"),
+
+    informacion: Yup.string()
+      .min(20, "La informacion tiene que tener mas de 20 letras")
+      .max(100, "La informacion no puede tener mas de 100 letras")
+      .required("La informacion no puede estar vacia"),
   });
+
+  const key = useState<string>("");
+
+  async function loadPinchos(inputValue: string) {
+    const pinchos = await axios({
+      method: "GET",
+      url: `/api/pinchos?limit=9999999&offset=0&key=${inputValue}&order=id&direction=ASC`,
+    }).then(function (response) {
+      if (response.data.status) {
+        return response.data;
+      }
+    });
+
+    return pinchos.data;
+  }
+
+  interface Pincho {
+    id: string | number;
+    nombre: string;
+  }
+
+  function MultiValueLabel(
+    props: MultiValueGenericProps<{ id: string; nombre: string }, true>
+  ) {
+    return (
+      <components.MultiValueLabel {...props}>
+        <span className="text-green-600 font-roboto">{props.children}</span>
+      </components.MultiValueLabel>
+    );
+  }
+
+  function MultiValueRemove(
+    props: MultiValueRemoveProps<{ id: string; nombre: string }, true>
+  ) {
+    return (
+      <components.MultiValueRemove {...props}>
+        <AiFillCloseCircle className="bg-transparent text-black" />
+      </components.MultiValueRemove>
+    );
+  }
+
+  function MultiValueContainer(
+    props: MultiValueGenericProps<{ id: string; nombre: string }, true>
+  ) {
+    return <components.MultiValueContainer {...props} />;
+  }
 
   return (
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
       <Formik
         initialValues={{
-          id: data.id,
-          nombre: data.nombre,
-          localizacion: data.localizacion,
-          informacion: data.informacion,
+          id: Bardata.id,
+          nombre: Bardata.nombre,
+          localizacion: Bardata.localizacion,
+          informacion: Bardata.informacion,
         }}
-        //validationSchema={adminSchema}
+        validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
           console.log("mensaje enviado");
         }}
@@ -42,8 +112,8 @@ export default function BarForm({ data }: any) {
             className="bg-white flex space-x-2 relative"
             onSubmit={handleSubmit}
           >
-            <div className="w-1/2 p-1 rounded-md shadow-md border-2 relative bg-white h-[390px]">
-              {data.img.length > 0 ? (
+            <div className="w-1/2 p-1 rounded-md shadow-md border-2 relative bg-white">
+              {Bardata.img.length > 0 ? (
                 <Image
                   src={
                     "http://localhost/logrocho/logrocho-backend/img/imagen.png"
@@ -64,7 +134,7 @@ export default function BarForm({ data }: any) {
               </div>
             </div>
 
-            <div className="w-1/2 p-4 rounded-md shadow-md border-2 bg-white space-y-4 overflow-auto  h-[390px]">
+            <div className="w-1/2 p-4 rounded-md shadow-md border-2 bg-white space-y-4 overflow-auto">
               <div className="flex space-x-2 bg-white">
                 <div className="bg-white grow">
                   <label
@@ -78,7 +148,7 @@ export default function BarForm({ data }: any) {
                     id="idBar"
                     name="id"
                     disabled={true}
-                    className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    className="border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                 </div>
 
@@ -95,6 +165,11 @@ export default function BarForm({ data }: any) {
                     name="nombre"
                     className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
+                  />
+                  <ErrorMessage
+                    component="span"
+                    name="nombre"
+                    className="text-red-500 bg-white font-roboto text-xs"
                   />
                 </div>
               </div>
@@ -113,6 +188,11 @@ export default function BarForm({ data }: any) {
                   className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 />
+                <ErrorMessage
+                  component="span"
+                  name="localizacion"
+                  className="text-red-500 bg-white font-roboto text-xs"
+                />
               </div>
 
               <div className="bg-white">
@@ -130,9 +210,67 @@ export default function BarForm({ data }: any) {
                   className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   required
                 />
+                <ErrorMessage
+                  component="span"
+                  name="informacion"
+                  className="text-red-500 bg-white font-roboto text-xs"
+                />
               </div>
 
-              {/* //TODO: https://react-select.com/home <- utilizar esto para añadir los pinchos */}
+              <div className="bg-white">
+                <label
+                  className="font-roboto bg-white font-light text-lg text-black"
+                  htmlFor="pinchosBar"
+                >
+                  Pinchos
+                </label>
+                <AsyncSelect
+                  id="pinchosBar"
+                  isMulti={true}
+                  isClearable={true}
+                  isSearchable={true}
+                  cacheOptions
+                  menuPlacement="top"
+                  loadOptions={loadPinchos}
+                  getOptionValue={(option: any) => `${option["id"]}`}
+                  getOptionLabel={(option: any) => `${option["nombre"]}`}
+                  styles={{
+                    multiValue: (base) => ({
+                      ...base,
+                      border: `1px solid green`,
+                      borderRadius: 3,
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      backgroundColor: "transparent",
+                    }),
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: "white",
+                      border: "1px solid lightgray",
+                      borderRadius: 8,
+                      padding: 2,
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      backgroundColor: "white",
+                    }),
+                    container: (base) => ({
+                      ...base,
+                      backgroundColor: "white",
+                    }),
+                    indicatorsContainer: (base) => ({
+                      ...base,
+                      backgroundColor: "white",
+                    }),
+                  }}
+                  components={{
+                    MultiValueLabel: MultiValueLabel,
+                    MultiValueRemove: MultiValueRemove,
+                    MultiValueContainer: MultiValueContainer,
+                  }}
+                />
+              </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
