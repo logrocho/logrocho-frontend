@@ -20,6 +20,11 @@ import { useState } from "@hookstate/core";
 import axios from "axios";
 import { GiKetchup } from "react-icons/gi";
 import { AiFillCloseCircle } from "react-icons/ai";
+import bares from "../../../pages/api/bares";
+import { API_URL } from "../../../lib/const";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useDropzone } from "react-dropzone";
+import React from "react";
 
 export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
@@ -35,11 +40,9 @@ export default function BarForm({ Bardata }: any) {
 
     informacion: Yup.string()
       .min(20, "La informacion tiene que tener mas de 20 letras")
-      .max(100, "La informacion no puede tener mas de 100 letras")
+      .max(200, "La informacion no puede tener mas de 200 letras")
       .required("La informacion no puede estar vacia"),
   });
-
-  const key = useState<string>("");
 
   async function loadPinchos(inputValue: string) {
     const pinchos = await axios({
@@ -54,14 +57,7 @@ export default function BarForm({ Bardata }: any) {
     return pinchos.data;
   }
 
-  interface Pincho {
-    id: string | number;
-    nombre: string;
-  }
-
-  function MultiValueLabel(
-    props: MultiValueGenericProps<{ id: string; nombre: string }, true>
-  ) {
+  function MultiValueLabel(props: MultiValueGenericProps<any, true>) {
     return (
       <components.MultiValueLabel {...props}>
         <span className="text-green-600 font-roboto">{props.children}</span>
@@ -69,9 +65,7 @@ export default function BarForm({ Bardata }: any) {
     );
   }
 
-  function MultiValueRemove(
-    props: MultiValueRemoveProps<{ id: string; nombre: string }, true>
-  ) {
+  function MultiValueRemove(props: MultiValueRemoveProps<any, true>) {
     return (
       <components.MultiValueRemove {...props}>
         <AiFillCloseCircle className="bg-transparent text-black" />
@@ -79,11 +73,16 @@ export default function BarForm({ Bardata }: any) {
     );
   }
 
-  function MultiValueContainer(
-    props: MultiValueGenericProps<{ id: string; nombre: string }, true>
-  ) {
+  function MultiValueContainer(props: MultiValueGenericProps<any, true>) {
     return <components.MultiValueContainer {...props} />;
   }
+
+  const zonaImagen = useState("subir");
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: "image/jpeg, image/png",
+    multiple: true,
+  });
 
   return (
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
@@ -93,10 +92,31 @@ export default function BarForm({ Bardata }: any) {
           nombre: Bardata.nombre,
           localizacion: Bardata.localizacion,
           informacion: Bardata.informacion,
+          pinchos: Bardata.pinchos,
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          console.log("mensaje enviado");
+          console.log("mensaje enviado", values);
+
+          const response = await axios({
+            method: "POST",
+            url: "/api/updateBar",
+            data: {
+              bar: values,
+            },
+          })
+            .then(function (response) {
+              if (response.data.status) {
+                return response.data;
+              }
+            })
+            .catch(function (error) {
+              if (!error.response.data.status) {
+                return error.data;
+              }
+            });
+
+          return response;
         }}
       >
         {({
@@ -112,8 +132,66 @@ export default function BarForm({ Bardata }: any) {
             className="bg-white flex space-x-2 relative"
             onSubmit={handleSubmit}
           >
-            <div className="w-1/2 p-1 rounded-md shadow-md border-2 relative bg-white">
-              {Bardata.img.length > 0 ? (
+            <div className="w-1/2 p-2 rounded-md shadow-md border-2 bg-white flex flex-col">
+              <div className="flex justify-center space-x-2 mt-4 bg-transparent">
+                <div
+                  className={`${
+                    zonaImagen.get() === "subir"
+                      ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
+                      : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
+                  }`}
+                  onClick={(e) => zonaImagen.set("subir")}
+                >
+                  <p className="bg-transparent font-roboto text-black text-center font-medium">
+                    Subir Imagen ⬆️
+                  </p>
+                </div>
+                <div
+                  className={`${
+                    zonaImagen.get() === "galeria"
+                      ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
+                      : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
+                  }`}
+                  onClick={(e) => zonaImagen.set("galeria")}
+                >
+                  <p className="bg-transparent font-roboto text-black text-center font-medium">
+                    Galeria 🖼️
+                  </p>
+                </div>
+              </div>
+
+              {zonaImagen.get() === "subir" ? (
+                <React.Fragment>
+                  <div
+                    {...getRootProps({ className: "dropzone" })}
+                    className="bg-white p-10 border-2 border-dashed shadow-md mt-10"
+                  >
+                    <input {...getInputProps()} />
+                    <p className="font-roboto text-lg font-medium text-black text-center bg-white">
+                      Suelta las imagenes aqui, o haz click para seleccionarlas
+                    </p>
+                  </div>
+
+                  {console.log(acceptedFiles)}
+                  <h1 className="font-roboto text-black text-sm ml-1 bg-transparent mt-3">
+                    Ficheros acceptados
+                  </h1>
+                  <div className="space-y-3 overflow-auto border-2 rounded-md p-2 bg-white shadow-sm max-h-52 h-full">
+                    {acceptedFiles.map((files, index) => (
+                      <div
+                        className="font-roboto font-medium text-green-600 bg-white border-2 border-green-600 p-1 rounded-md shadow-md"
+                        key={index}
+                      >
+                        {files.name}
+                      </div>
+                    ))}
+                  </div>
+                </React.Fragment>
+              ) : null}
+
+              {zonaImagen.get() === "galeria" ? <div>Zona Galeria</div> : null}
+
+              {/* {Bardata.img.length > 0 ? (
                 <Image
                   src={
                     "http://localhost/logrocho/logrocho-backend/img/imagen.png"
@@ -122,19 +200,19 @@ export default function BarForm({ Bardata }: any) {
                   width={100}
                   height={100}
                 />
-              ) : null}
+              ) : null} */}
 
               {/* <p>{data.img}</p> */}
-              <div>
+              {/* <div>
                 <input
                   type="file"
                   onChange={(e) => console.log(e)}
                   className="absolute bg-white bottom-3 left-0 right-0 mx-auto file:bg-green-800 file:border-2 file:rounded-md file:px-6 file:py-2 file:border-none file:font-roboto file:text-white file:uppercase"
                 />
-              </div>
+              </div>s */}
             </div>
 
-            <div className="w-1/2 p-4 rounded-md shadow-md border-2 bg-white space-y-4 overflow-auto">
+            <div className="w-1/2 p-4 rounded-md shadow-md border-2 bg-white space-y-4">
               <div className="flex space-x-2 bg-white">
                 <div className="bg-white grow">
                   <label
@@ -225,12 +303,15 @@ export default function BarForm({ Bardata }: any) {
                   Pinchos
                 </label>
                 <AsyncSelect
+                  name="pinchos"
                   id="pinchosBar"
                   isMulti={true}
                   isClearable={true}
                   isSearchable={true}
                   cacheOptions
+                  onChange={(e) => (values.pinchos = e)}
                   menuPlacement="top"
+                  defaultValue={values.pinchos}
                   loadOptions={loadPinchos}
                   getOptionValue={(option: any) => `${option["id"]}`}
                   getOptionLabel={(option: any) => `${option["nombre"]}`}
@@ -274,9 +355,17 @@ export default function BarForm({ Bardata }: any) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
+                className={`${
+                  isSubmitting
+                    ? "text-white bg-green-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center shadow-green-400 shadow-md"
+                    : "text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
+                }`}
               >
-                Actualizar
+                {isSubmitting ? (
+                  <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />
+                ) : (
+                  <span className="bg-transparent">Actualizar</span>
+                )}
               </button>
             </div>
           </Form>
