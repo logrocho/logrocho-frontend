@@ -59,7 +59,7 @@ export default function Page(): JSX.Element {
   return (
     <React.Fragment>
       <Head>
-        l<title>Panel admin - Logrocho</title>
+        <title>Panel admin - Bares - Logrocho</title>
         <meta name="description" content="Logrocho by Sergio Malagon" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -119,13 +119,9 @@ export default function Page(): JSX.Element {
                 offset.set((p) => p - limit.get());
               }}
               className={`${
-                data?.data.length === 0 && lastDirection.get() === "anterior"
-                  ? " bg-green-300 "
-                  : " bg-green-600 "
+                offset.get() === 0 ? " bg-green-300 " : " bg-green-600 "
               }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-3 rounded-md shadow-md`}
-              disabled={
-                data?.data.length === 0 && lastDirection.get() === "anterior"
-              }
+              disabled={offset.get() === 0}
             >
               Anterior
             </button>
@@ -156,13 +152,11 @@ export default function Page(): JSX.Element {
                 offset.set((p) => p + limit.get());
               }}
               className={`${
-                data?.data.length === 0 && lastDirection.get() === "siguiente"
+                offset.get() + offset.get() >= data?.data.count
                   ? " bg-green-300 "
                   : " bg-green-600 "
               }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
-              disabled={
-                data?.data.length === 0 && lastDirection.get() === "siguiente"
-              }
+              disabled={offset.get() + offset.get() >= data?.data.count}
             >
               Siguiente
             </button>

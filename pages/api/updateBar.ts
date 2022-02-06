@@ -10,7 +10,7 @@ async function updateBar(req: NextApiRequest, res: NextApiResponse) {
     const {user_token} = req.cookies;
 
     await axios({
-      method: "GET",
+      method: "POST",
 
       url: API_URL + `updateBar`,
 

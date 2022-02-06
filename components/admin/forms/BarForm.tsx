@@ -24,7 +24,10 @@ import bares from "../../../pages/api/bares";
 import { API_URL } from "../../../lib/const";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
-import React from "react";
+import React, { useRef } from "react";
+import Cookies from "js-cookie";
+import { getTokenData } from "../../../lib/auth";
+import { useRouter } from "next/router";
 
 export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
@@ -68,7 +71,7 @@ export default function BarForm({ Bardata }: any) {
   function MultiValueRemove(props: MultiValueRemoveProps<any, true>) {
     return (
       <components.MultiValueRemove {...props}>
-        <AiFillCloseCircle className="bg-transparent text-black" />
+        <AiFillCloseCircle className="bg-transparent text-red-600" />
       </components.MultiValueRemove>
     );
   }
@@ -79,10 +82,49 @@ export default function BarForm({ Bardata }: any) {
 
   const zonaImagen = useState("subir");
 
+  const router = useRouter();
+
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg, image/png",
     multiple: true,
+    maxFiles: 7,
+    maxSize: 4194304,
   });
+
+  async function uploadImg() {
+    const form = new FormData();
+
+    acceptedFiles.forEach((element, index) => {
+      form.append(`file${index}`, element);
+    });
+
+    const tokenData = await getTokenData(Cookies.get("user_token") as string);
+
+    if (tokenData?.rol === "admin") {
+      const response = await axios({
+        method: "POST",
+        url: API_URL + `uploadImagesBar?id=${Bardata.id}`,
+        data: form,
+      });
+
+      const data = await response.data;
+
+      router.reload();
+    }
+  }
+
+  async function removeImg(img: any, e: any) {
+    e.currentTarget.parentNode.style.display = "none";
+
+    const response = await axios({
+      method: "POST",
+      url:
+        API_URL +
+        `removeImagesBar?img_id=${img.id}&bar_id=${Bardata.id}&filename=${img.filename}`,
+    });
+
+    const data = await response.data;
+  }
 
   return (
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
@@ -93,6 +135,7 @@ export default function BarForm({ Bardata }: any) {
           localizacion: Bardata.localizacion,
           informacion: Bardata.informacion,
           pinchos: Bardata.pinchos,
+          img: Bardata.img,
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -131,6 +174,8 @@ export default function BarForm({ Bardata }: any) {
           <Form
             className="bg-white flex space-x-2 relative"
             onSubmit={handleSubmit}
+            encType="multipart/form-data"
+            method="POST"
           >
             <div className="w-1/2 p-2 rounded-md shadow-md border-2 bg-white flex flex-col">
               <div className="flex justify-center space-x-2 mt-4 bg-transparent">
@@ -164,52 +209,78 @@ export default function BarForm({ Bardata }: any) {
                 <React.Fragment>
                   <div
                     {...getRootProps({ className: "dropzone" })}
-                    className="bg-white p-10 border-2 border-dashed shadow-md mt-10"
+                    className="bg-white p-10 border-2 border-dashed rounded-md mt-10"
                   >
-                    <input {...getInputProps()} />
+                    <input {...getInputProps({ name: "files[]" })} />
                     <p className="font-roboto text-lg font-medium text-black text-center bg-white">
                       Suelta las imagenes aqui, o haz click para seleccionarlas
+                      (Max. 4MB)
                     </p>
                   </div>
 
                   {console.log(acceptedFiles)}
                   <h1 className="font-roboto text-black text-sm ml-1 bg-transparent mt-3">
-                    Ficheros acceptados
+                    Imagenes acceptadas
                   </h1>
+
                   <div className="space-y-3 overflow-auto border-2 rounded-md p-2 bg-white shadow-sm max-h-52 h-full">
-                    {acceptedFiles.map((files, index) => (
+                    {acceptedFiles.map((file, index) => (
                       <div
-                        className="font-roboto font-medium text-green-600 bg-white border-2 border-green-600 p-1 rounded-md shadow-md"
+                        className="flex justify-between items-center px-3 font-roboto font-medium text-green-600 bg-white border-2 border-green-600 p-1 rounded-md shadow-md"
                         key={index}
                       >
-                        {files.name}
+                        {file.name}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={(e) => uploadImg()}
+                    className={`${
+                      acceptedFiles.length > 0
+                        ? "text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
+                        : "text-white mt-2 bg-gray-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center"
+                    }`}
+                    disabled={acceptedFiles.length === 0}
+                  >
+                    Subir Imagenes
+                  </button>
+                </React.Fragment>
+              ) : null}
+
+              {zonaImagen.get() === "galeria" ? (
+                <React.Fragment>
+                  <div className="flex gap-2 mt-3 bg-white">
+                    {values.img.map((img: any, index: number) => (
+                      <div
+                        key={index}
+                        className="flex flex-col bg-transparent space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"
+                      >
+                        <Image
+                          src={`http://localhost/logrocho/logrocho-backend/img/img_bares/${values.id}/${img.filename}`}
+                          alt={img}
+                          key={index}
+                          layout="intrinsic"
+                          width={100}
+                          height={100}
+                          className="rounded-md"
+                        />
+
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            removeImg(img, e);
+                          }}
+                          className="text-red-600 border font-roboto font-medium text-sm border-red-600 bg-white p-1 rounded-md hover:text-white hover:bg-red-600"
+                        >
+                          Eliminar
+                        </button>
                       </div>
                     ))}
                   </div>
                 </React.Fragment>
               ) : null}
-
-              {zonaImagen.get() === "galeria" ? <div>Zona Galeria</div> : null}
-
-              {/* {Bardata.img.length > 0 ? (
-                <Image
-                  src={
-                    "http://localhost/logrocho/logrocho-backend/img/imagen.png"
-                  }
-                  layout="intrinsic"
-                  width={100}
-                  height={100}
-                />
-              ) : null} */}
-
-              {/* <p>{data.img}</p> */}
-              {/* <div>
-                <input
-                  type="file"
-                  onChange={(e) => console.log(e)}
-                  className="absolute bg-white bottom-3 left-0 right-0 mx-auto file:bg-green-800 file:border-2 file:rounded-md file:px-6 file:py-2 file:border-none file:font-roboto file:text-white file:uppercase"
-                />
-              </div>s */}
             </div>
 
             <div className="w-1/2 p-4 rounded-md shadow-md border-2 bg-white space-y-4">
@@ -355,11 +426,7 @@ export default function BarForm({ Bardata }: any) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`${
-                  isSubmitting
-                    ? "text-white bg-green-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center shadow-green-400 shadow-md"
-                    : "text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
-                }`}
+                className="text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
               >
                 {isSubmitting ? (
                   <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />

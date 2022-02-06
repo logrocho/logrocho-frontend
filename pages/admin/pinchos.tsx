@@ -60,7 +60,7 @@ export default function Page(): JSX.Element {
   return (
     <React.Fragment>
       <Head>
-        l<title>Panel admin - Logrocho</title>
+        <title>Panel admin - Pinchos - Logrocho</title>
         <meta name="description" content="Logrocho by Sergio Malagon" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

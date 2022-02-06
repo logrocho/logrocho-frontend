@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookstate/core": "^3.0.13",
+    "@tippyjs/react": "^4.2.6",
     "@types/js-cookie": "^3.0.1",
     "axios": "^0.24.0",
     "formik": "^2.2.9",
