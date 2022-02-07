@@ -1,6 +1,6 @@
 {
   "name": "logrocho-frontend",
-  "version": "17.01.22",
+  "version": "07.02.22",
   "private": true,
   "scripts": {
     "dev": "next dev",

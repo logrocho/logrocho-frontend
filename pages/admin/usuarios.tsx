@@ -3,7 +3,7 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "@hookstate/core";
-import useSWR from "swr";
+import useSWR, { SWRConfig, useSWRConfig } from "swr";
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -22,8 +22,15 @@ export default function Page(): JSX.Element {
 
   const { data, error } = useSWR(
     `/api/users?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
+
+  const { mutate } = useSWRConfig();
 
   function cambiarOrden(columna: any) {
     if (order.get() === columna.target.id) {
@@ -36,6 +43,26 @@ export default function Page(): JSX.Element {
       order.set(columna.target.id);
       direction.set("ASC");
     }
+  }
+
+  function eliminarUsuario(ususario: any) {
+    mutate(
+      `/api/users?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
+      { ...data },
+      false
+    );
+
+    axios({
+      method: "POST",
+      url: "/api/deleteUsuario",
+      data: {
+        user: ususario,
+      },
+    });
+
+    mutate(
+      `/api/users?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`
+    );
   }
 
   return (
@@ -101,13 +128,9 @@ export default function Page(): JSX.Element {
                 offset.set((p) => p - limit.get());
               }}
               className={`${
-                data?.data.length === 0 && lastDirection.get() === "anterior"
-                  ? " bg-green-300 "
-                  : " bg-green-600 "
-              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
-              disabled={
-                data?.data.length === 0 && lastDirection.get() === "anterior"
-              }
+                offset.get() === 0 ? " bg-green-300 " : " bg-green-600 "
+              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-3 rounded-md shadow-md`}
+              disabled={offset.get() === 0}
             >
               Anterior
             </button>
@@ -119,7 +142,7 @@ export default function Page(): JSX.Element {
                 Numero de resultados:
               </label>
               <select
-                className="shadow-md rounded-md m-2"
+                className="shadow-md rounded-md m-2 px-6 py-3"
                 name="paginacion"
                 id="paginacion"
                 onChange={(e) => {
@@ -138,113 +161,114 @@ export default function Page(): JSX.Element {
                 offset.set((p) => p + limit.get());
               }}
               className={`${
-                data?.data.length === 0 && lastDirection.get() === "siguiente"
+                offset.get() + limit.get() >= data?.data.count
                   ? " bg-green-300 "
                   : " bg-green-600 "
               }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
-              disabled={
-                data?.data.length === 0 && lastDirection.get() === "siguiente"
-              }
+              disabled={offset.get() + limit.get() >= data?.data.count}
             >
               Siguiente
             </button>
           </div>
-          <div className="overflow-auto rounded-lg shadow-md bg-white border-l-2 border-t-2 border-r-2">
-            {data?.data.length === 0 ? (
-              "no hay mas data"
-            ) : !data ? (
-              <div className="p-10 bg-white ">
-                <p className="text-left font-roboto font-light text-black text-3xl bg-transparent">
-                  Cargando...
-                </p>
-              </div>
-            ) : error ? (
-              <div className="text-red font-roboto text-5xl p-10 text-center bg-white">
-                <p>Error, no se han podido obtener los datos</p>
-              </div>
-            ) : (
-              <table className="w-full">
-                <thead className="bg-gray-100 dark:bg-gray-700">
-                  <tr className="border-b-2">
-                    <th
-                      id="id"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      id
-                      {order.get() === "id" ? "(" + direction.get() + ")" : ""}
-                    </th>
-                    <th
-                      id="correo"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      correo
-                      {order.get() === "correo"
-                        ? "(" + direction.get() + ")"
-                        : ""}
-                    </th>
-                    <th
-                      id="nombre"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      nombre
-                      {order.get() === "nombre"
-                        ? "(" + direction.get() + ")"
-                        : ""}
-                    </th>
-                    <th
-                      id="apellidos"
-                      onClick={(e) => cambiarOrden(e)}
-                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                    >
-                      apellidos
-                      {order.get() === "apellidos"
-                        ? "(" + direction.get() + ")"
-                        : ""}
-                    </th>
-                    <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
-                      Administrar
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.data.map((usuario: any, index: number) => (
-                    <React.Fragment key={index}>
-                      <tr className="border-b-2">
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {usuario.id}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {usuario.correo}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {usuario.nombre}
-                        </td>
-                        <td className="py-4 px-6 text-sm truncate font-medium text-gray-900 whitespace-nowrap bg-white">
-                          {usuario.apellidos}
-                        </td>
-                        <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
-                          <button
-                            //onClick={() => mostrarForm(index)}
-                            className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
-                          >
-                            Ver usuario
-                          </button>
-                          <button
-                            // onClick={() => mostrarForm(index)}
-                            className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
-                          >
-                            Reiniciar contraseña
-                          </button>
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            )}
+          <div className="rounded-lg shadow-md bg-white border-l-2 border-t-2 border-r-2">
+            {error ? <div>Error al obtener los datos</div> : null}
+
+            {!data ? <div>Cargando....</div> : null}
+
+            <table className="table-auto w-full">
+              <thead className="bg-gray-100 dark:bg-gray-700">
+                <tr className="border-b-2 ">
+                  <th
+                    id="id"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    id
+                    {order.get() === "id" ? "(" + direction.get() + ")" : ""}
+                  </th>
+                  <th
+                    id="correo"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    correo
+                    {order.get() === "correo"
+                      ? "(" + direction.get() + ")"
+                      : ""}
+                  </th>
+                  <th
+                    id="nombre"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    nombre
+                    {order.get() === "nombre"
+                      ? "(" + direction.get() + ")"
+                      : ""}
+                  </th>
+                  <th
+                    id="apellidos"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    apellidos
+                    {order.get() === "apellidos"
+                      ? "(" + direction.get() + ")"
+                      : ""}
+                  </th>
+
+                  <th
+                    id="rol"
+                    onClick={(e) => cambiarOrden(e)}
+                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                  >
+                    rol
+                    {order.get() === "rol" ? "(" + direction.get() + ")" : ""}
+                  </th>
+
+                  <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
+                    Administrar
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.data.users.map((user: any, index: number) => (
+                  <React.Fragment key={index}>
+                    <tr className="border-b-2">
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {user.id}
+                      </td>
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {user.correo}
+                      </td>
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {user.nombre}
+                      </td>
+                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {user.apellidos}
+                      </td>
+                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                        {user.rol}
+                      </td>
+                      <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
+                        {/* <Link href={'/user/s'}>  */}
+                        {/* //TODO: La redireccion se hara con el username que tengo que agregar en bd */}
+                        {/* </Link> */}
+                        <button className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600">
+                          Ver Usuario
+                        </button>
+                        <button
+                          onClick={() => eliminarUsuario(user)}
+                          className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

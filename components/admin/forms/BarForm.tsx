@@ -1,8 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Image from "next/image";
-import Select, {
-  StylesConfig,
+import {
   components,
   MultiValueRemoveProps,
   MultiValueGenericProps,
@@ -11,23 +10,16 @@ import Select, {
   IndicatorsContainerProps,
   GroupBase,
 } from "react-select";
-import makeAnimated from "react-select/animated";
-import Async, { useAsync } from "react-select/async";
 import AsyncSelect from "react-select/async";
-
-import useSWR from "swr";
 import { useState } from "@hookstate/core";
 import axios from "axios";
-import { GiKetchup } from "react-icons/gi";
 import { AiFillCloseCircle } from "react-icons/ai";
-import bares from "../../../pages/api/bares";
 import { API_URL } from "../../../lib/const";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
-import React, { useRef } from "react";
+import React from "react";
 import Cookies from "js-cookie";
 import { getTokenData } from "../../../lib/auth";
-import { useRouter } from "next/router";
 
 export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
@@ -57,7 +49,7 @@ export default function BarForm({ Bardata }: any) {
       }
     });
 
-    return pinchos.data;
+    return pinchos.data.pinchos;
   }
 
   function MultiValueLabel(props: MultiValueGenericProps<any, true>) {
@@ -81,8 +73,6 @@ export default function BarForm({ Bardata }: any) {
   }
 
   const zonaImagen = useState("subir");
-
-  const router = useRouter();
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg, image/png",
@@ -108,8 +98,6 @@ export default function BarForm({ Bardata }: any) {
       });
 
       const data = await response.data;
-
-      router.reload();
     }
   }
 
@@ -139,8 +127,6 @@ export default function BarForm({ Bardata }: any) {
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          console.log("mensaje enviado", values);
-
           const response = await axios({
             method: "POST",
             url: "/api/updateBar",
@@ -218,7 +204,6 @@ export default function BarForm({ Bardata }: any) {
                     </p>
                   </div>
 
-                  {console.log(acceptedFiles)}
                   <h1 className="font-roboto text-black text-sm ml-1 bg-transparent mt-3">
                     Imagenes acceptadas
                   </h1>
@@ -251,8 +236,8 @@ export default function BarForm({ Bardata }: any) {
 
               {zonaImagen.get() === "galeria" ? (
                 <React.Fragment>
-                  <div className="flex gap-2 mt-3 bg-white">
-                    {values.img.map((img: any, index: number) => (
+                  <div className="flex flex-wrap overflow-auto h-min gap-2 mt-3 bg-white">
+                    {Bardata.img.map((img: any, index: number) => (
                       <div
                         key={index}
                         className="flex flex-col bg-transparent space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"

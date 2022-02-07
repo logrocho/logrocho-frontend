@@ -7,7 +7,7 @@ import Link from "next/link";
 import { API_URL } from "../../lib/const";
 import { BiLogOut } from "react-icons/bi";
 import { useState } from "@hookstate/core";
-import useSWR, { SWRConfig } from "swr";
+import useSWR, { SWRConfig, useSWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -34,8 +34,15 @@ export default function Page(): JSX.Element {
 
   const { data, error } = useSWR(
     `/api/bares?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: true,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
+
+  const { mutate } = useSWRConfig();
 
   function mostrarForm(indexForm: number) {
     showForm.set(!showForm.get());
@@ -54,6 +61,26 @@ export default function Page(): JSX.Element {
       order.set(columna.target.id);
       direction.set("ASC");
     }
+  }
+
+  function eliminarBar(bar: any) {
+    mutate(
+      `/api/bares?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
+      { ...data },
+      false
+    );
+
+    axios({
+      method: "POST",
+      url: "/api/deleteBar",
+      data: {
+        bar: bar,
+      },
+    });
+
+    mutate(
+      `/api/bares?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`
+    );
   }
 
   return (
@@ -152,11 +179,11 @@ export default function Page(): JSX.Element {
                 offset.set((p) => p + limit.get());
               }}
               className={`${
-                offset.get() + offset.get() >= data?.data.count
+                offset.get() + limit.get() >= data?.data.count
                   ? " bg-green-300 "
                   : " bg-green-600 "
               }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
-              disabled={offset.get() + offset.get() >= data?.data.count}
+              disabled={offset.get() + limit.get() >= data?.data.count}
             >
               Siguiente
             </button>
@@ -236,7 +263,7 @@ export default function Page(): JSX.Element {
                           Ver ficha
                         </button>
                         <button
-                          onClick={() => mostrarForm(index)}
+                          onClick={() => eliminarBar(bar)}
                           className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
                         >
                           Eliminar
@@ -256,7 +283,7 @@ export default function Page(): JSX.Element {
               </tbody>
             </table>
           </div>
-          <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md">
+          <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full py-1 text-center shadow-green-400 shadow-md">
             Nueva fila
           </button>
         </div>
