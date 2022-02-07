@@ -299,9 +299,9 @@ export default function Page(): JSX.Element {
               </tbody>
             </table>
           </div>
-          <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full py-1 text-center shadow-green-400 shadow-md">
+          {/* <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full py-1 text-center shadow-green-400 shadow-md">
             Nueva fila
-          </button>
+          </button> */}
         </div>
       </div>
     </React.Fragment>

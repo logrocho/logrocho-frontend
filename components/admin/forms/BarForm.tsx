@@ -91,11 +91,10 @@ export default function BarForm({ Bardata }: any) {
     const tokenData = await getTokenData(Cookies.get("user_token") as string);
 
     if (tokenData?.rol === "admin") {
-      const response = await axios({
-        method: "POST",
-        url: API_URL + `uploadImagesBar?id=${Bardata.id}`,
-        data: form,
-      });
+      const response = await axios.post(
+        API_URL + `uploadImagesBar?id=${Bardata.id}`,
+        form
+      );
 
       const data = await response.data;
     }
@@ -118,12 +117,12 @@ export default function BarForm({ Bardata }: any) {
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
       <Formik
         initialValues={{
-          id: Bardata.id,
-          nombre: Bardata.nombre,
-          localizacion: Bardata.localizacion,
-          informacion: Bardata.informacion,
-          pinchos: Bardata.pinchos,
-          img: Bardata.img,
+          id: Bardata?.id ?? "",
+          nombre: Bardata?.nombre ?? "",
+          localizacion: Bardata?.localizacion ?? "",
+          informacion: Bardata?.informacion ?? "",
+          pinchos: Bardata?.pinchos ?? [],
+          img: Bardata?.img ?? [],
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -237,7 +236,7 @@ export default function BarForm({ Bardata }: any) {
               {zonaImagen.get() === "galeria" ? (
                 <React.Fragment>
                   <div className="flex flex-wrap overflow-auto h-min gap-2 mt-3 bg-white">
-                    {Bardata.img.map((img: any, index: number) => (
+                    {Bardata?.img.map((img: any, index: number) => (
                       <div
                         key={index}
                         className="flex flex-col bg-transparent space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"
@@ -416,7 +415,9 @@ export default function BarForm({ Bardata }: any) {
                 {isSubmitting ? (
                   <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />
                 ) : (
-                  <span className="bg-transparent">Actualizar</span>
+                  <span className="bg-transparent">
+                    {Bardata === undefined ? "Crear" : "Actualizar"}
+                  </span>
                 )}
               </button>
             </div>

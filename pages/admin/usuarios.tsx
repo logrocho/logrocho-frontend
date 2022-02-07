@@ -45,7 +45,7 @@ export default function Page(): JSX.Element {
     }
   }
 
-  function eliminarUsuario(ususario: any) {
+  function eliminarUsuario(usuario: any) {
     mutate(
       `/api/users?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
       { ...data },
@@ -56,7 +56,7 @@ export default function Page(): JSX.Element {
       method: "POST",
       url: "/api/deleteUsuario",
       data: {
-        user: ususario,
+        user: usuario,
       },
     });
 
