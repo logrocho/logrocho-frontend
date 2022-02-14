@@ -43,3 +43,8 @@ Para poder acceder a ciertas paginas hay que iniciar sesion.
 
 email: correo@test.com
 password: admin
+
+Si utilizando la web te encuentras con un error como este:
+![image info](./public/error.png)
+
+Es un problema del framework, yo no puedo hacer nada al respecto hasta que lo actualizen... 😢😢
