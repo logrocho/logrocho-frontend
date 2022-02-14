@@ -5,8 +5,10 @@ import { HiLocationMarker } from "react-icons/hi";
 import { Formik, Form, Field } from "formik";
 import Head from "next/head";
 import Layout from "../components/Layout";
+import { getTokenData } from "../lib/auth";
+import { API_URL } from "../lib/const";
 
-export default function ContactoPage() {
+export default function ContactoPage({ user }: any) {
   return (
     <React.Fragment>
       <Head>
@@ -15,7 +17,7 @@ export default function ContactoPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout>
+      <Layout user={user}>
         <div className="mx-auto p-5 grow my-10">
           <h1 className="text-center text-black font-roboto font-bold text-6xl">
             Contacto
@@ -173,4 +175,18 @@ export default function ContactoPage() {
       </Layout>
     </React.Fragment>
   );
+}
+
+export async function getServerSideProps(context: any) {
+  const { user_token } = context.req.cookies;
+
+  const tokenData = await getTokenData(user_token);
+
+  const response = await fetch(API_URL + `user?correo=${tokenData?.correo}`);
+
+  const user = await response.json();
+
+  return {
+    props: { user },
+  };
 }

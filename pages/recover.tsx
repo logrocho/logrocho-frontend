@@ -39,16 +39,16 @@ function Recover(): JSX.Element {
             }) => (
               <Form
                 onSubmit={handleSubmit}
-                className="px-6 py-10 bg-white border shadow-xl rounded-md m-2"
+                className="px-6 py-5 bg-white border shadow-xl rounded-md m-2"
               >
-                <p className="text-slate-700 font-medium font-roboto text-xl mb-6 ml-px">
+                <p className="text-black bg-white font-medium font-roboto text-xl mb-6 ml-px">
                   Recuperar cuenta
                 </p>
 
-                <div className="mb-6">
+                <div className="mb-6 bg-transparent">
                   <label
                     htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    className="block mb-2 text-sm font-medium text-black bg-white"
                   >
                     Email
                   </label>
@@ -56,7 +56,7 @@ function Recover(): JSX.Element {
                     as="input"
                     type="email"
                     name="email"
-                    className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
                   />
                 </div>
@@ -67,6 +67,13 @@ function Recover(): JSX.Element {
                 >
                   Recuperar Contraseña
                 </button>
+                <div className="mt-2 bg-white">
+                  <Link href={"/login"} as={"/login"}>
+                    <a className="font-roboto text-sm bg-transparent text-green-600">
+                      Volver al login
+                    </a>
+                  </Link>
+                </div>
               </Form>
             )}
           </Formik>

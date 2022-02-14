@@ -45,6 +45,8 @@ export default function Page(): JSX.Element {
 
   const { mutate } = useSWRConfig();
 
+  const nuevoPincho = useState(false);
+
   function mostrarForm(indexForm: number) {
     showForm.set(!showForm.get());
 
@@ -299,9 +301,14 @@ export default function Page(): JSX.Element {
               </tbody>
             </table>
           </div>
-          {/* <button className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full py-1 text-center shadow-green-400 shadow-md">
-            Nueva fila
-          </button> */}
+          <button
+            onClick={() => nuevoPincho.set(!nuevoPincho.get())}
+            className="text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-lg w-full py-1 text-center shadow-green-400 shadow-md"
+          >
+            Nuevo Pincho
+          </button>
+
+          {nuevoPincho.get() ? <PinchoForm /> : null}
         </div>
       </div>
     </React.Fragment>

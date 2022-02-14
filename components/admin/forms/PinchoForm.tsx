@@ -17,11 +17,6 @@ export default function PinchoForm({ Pinchodata }: any) {
       .max(15, "El nombre no puede tener mas de 15 letras")
       .required("El nombre no puede estar vacio"),
 
-    puntuacion: Yup.number()
-      .positive("La puntuacion no puede ser negativa")
-      .round("floor")
-      .required("El campo de puntuacion no puede estar vacio"),
-
     precio: Yup.number()
       .positive("El numero no puede ser negativo")
       .round("floor")
@@ -42,7 +37,7 @@ export default function PinchoForm({ Pinchodata }: any) {
     maxSize: 4194304,
   });
 
-  async function uploadImg() {
+  async function uploadImg(id: any) {
     const form = new FormData();
 
     acceptedFiles.forEach((element, index) => {
@@ -54,7 +49,7 @@ export default function PinchoForm({ Pinchodata }: any) {
     if (tokenData?.rol === "admin") {
       const response = await axios({
         method: "POST",
-        url: API_URL + `uploadImagesPincho?id=${Pinchodata.id}`,
+        url: API_URL + `uploadImagesPincho?id=${id}`,
         data: form,
       });
 
@@ -75,38 +70,56 @@ export default function PinchoForm({ Pinchodata }: any) {
     const data = await response.data;
   }
 
+  async function insertPincho(data: any) {
+    const response = await axios({
+      method: "POST",
+      url: "/api/insertPincho",
+      data: data,
+    });
+
+    return await response.data;
+  }
+
+  async function getLastPincho() {
+    const bar = await axios({
+      method: "GET",
+      url: "/api/pinchos?limit=1&offset=0&key=&order=id&direction=DESC",
+    });
+
+    return bar.data.data.pinchos[0];
+  }
+
+  async function updatePincho(data: any) {
+    const response = await axios({
+      method: "POST",
+      url: "/api/updatePincho",
+      data: data,
+    });
+
+    return response.data;
+  }
+
   return (
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
       <Formik
         initialValues={{
-          id: Pinchodata.id,
-          nombre: Pinchodata.nombre,
-          puntuacion: Pinchodata.puntuacion,
-          ingredientes: Pinchodata.ingredientes,
-          precio: Pinchodata.precio,
-          img: Pinchodata.img,
+          id: Pinchodata?.id ?? "",
+          nombre: Pinchodata?.nombre ?? "",
+          puntuacion: Pinchodata?.puntuacion ?? 0,
+          ingredientes: Pinchodata?.ingredientes ?? "",
+          precio: Pinchodata?.precio ?? 0.0,
+          img: Pinchodata?.img,
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          const response = await axios({
-            method: "POST",
-            url: "/api/updatePincho",
-            data: {
-              pincho: values,
-            },
-          })
-            .then(function (response) {
-              if (response.data.status) {
-                return response.data;
-              }
-            })
-            .catch(function (error) {
-              if (!error.response.data.status) {
-                return error.data;
-              }
-            });
-
-          return response;
+          if (Pinchodata === undefined) {
+            const response = await insertPincho(values);
+            const lastPincho = await getLastPincho();
+            const responseImg = await uploadImg(lastPincho.id);
+          } else {
+            const response = await updatePincho(values);
+            const responseImg = await uploadImg(values.id);
+          }
         }}
       >
         {({
@@ -121,8 +134,6 @@ export default function PinchoForm({ Pinchodata }: any) {
           <Form
             className="bg-white flex space-x-2 relative"
             onSubmit={handleSubmit}
-            encType="multipart/form-data"
-            method="POST"
           >
             <div className="w-1/2 p-2 rounded-md shadow-md border-2 bg-white flex flex-col">
               <div className="flex justify-center space-x-2 mt-4 bg-transparent">
@@ -138,18 +149,20 @@ export default function PinchoForm({ Pinchodata }: any) {
                     Subir Imagen ⬆️
                   </p>
                 </div>
-                <div
-                  className={`${
-                    zonaImagen.get() === "galeria"
-                      ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
-                      : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
-                  }`}
-                  onClick={(e) => zonaImagen.set("galeria")}
-                >
-                  <p className="bg-transparent font-roboto text-black text-center font-medium">
-                    Galeria 🖼️
-                  </p>
-                </div>
+                {Pinchodata !== undefined ? (
+                  <div
+                    className={`${
+                      zonaImagen.get() === "galeria"
+                        ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
+                        : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
+                    }`}
+                    onClick={(e) => zonaImagen.set("galeria")}
+                  >
+                    <p className="bg-transparent font-roboto text-black text-center font-medium">
+                      Galeria 🖼️
+                    </p>
+                  </div>
+                ) : null}
               </div>
 
               {zonaImagen.get() === "subir" ? (
@@ -179,19 +192,6 @@ export default function PinchoForm({ Pinchodata }: any) {
                       </div>
                     ))}
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={(e) => uploadImg()}
-                    className={`${
-                      acceptedFiles.length > 0
-                        ? "text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
-                        : "text-white mt-2 bg-gray-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center"
-                    }`}
-                    disabled={acceptedFiles.length === 0}
-                  >
-                    Subir Imagenes
-                  </button>
                 </React.Fragment>
               ) : null}
 
@@ -280,13 +280,8 @@ export default function PinchoForm({ Pinchodata }: any) {
                     as="input"
                     id="puntuacionPincho"
                     name="puntuacion"
-                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    required
-                  />
-                  <ErrorMessage
-                    component="span"
-                    name="puntuacion"
-                    className="text-red-500 bg-white font-roboto text-xs"
+                    disabled={true}
+                    className="border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                 </div>
 
@@ -342,7 +337,9 @@ export default function PinchoForm({ Pinchodata }: any) {
                 {isSubmitting ? (
                   <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />
                 ) : (
-                  <span className="bg-transparent">Actualizar</span>
+                  <span className="bg-transparent">
+                    {Pinchodata === undefined ? "Crear" : "Actualizar"}
+                  </span>
                 )}
               </button>
             </div>

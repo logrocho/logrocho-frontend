@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import { API_URL } from "../../lib/const";
+import {  API_URL } from "../../lib/const";
 
 async function bares(req: NextApiRequest, res: NextApiResponse) {
   

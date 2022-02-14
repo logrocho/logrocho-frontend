@@ -8,6 +8,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import { Autoplay, Navigation, Pagination } from "swiper";
 import Layout from "../components/Layout";
+import { API_URL } from "../lib/const";
+import { getTokenData } from "../lib/auth";
 
 function LoginButton() {
   return (
@@ -174,7 +176,7 @@ function LogoutButton() {
   );
 }
 
-function Index(): JSX.Element {
+function Index({user}:any): JSX.Element {
   return (
     <React.Fragment>
       <Head>
@@ -183,7 +185,7 @@ function Index(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout>
+      <Layout user={user}>
 
       <div className="container mx-auto">
         <div className="mt-10 text-center">
@@ -196,3 +198,19 @@ function Index(): JSX.Element {
 }
 
 export default Index;
+
+export async function getServerSideProps(context:any) {
+
+  const {user_token} = context.req.cookies;
+
+  const tokenData = await getTokenData(user_token);
+
+  const response = await fetch(API_URL + `user?correo=${tokenData?.correo}`);
+
+  const user = await response.json();
+
+
+  return {
+    props: {user},
+  }
+}

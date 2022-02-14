@@ -10,16 +10,18 @@ import {
   IndicatorsContainerProps,
   GroupBase,
 } from "react-select";
-import AsyncSelect from "react-select/async";
+import Select from "react-select";
 import { useState } from "@hookstate/core";
 import axios from "axios";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { API_URL } from "../../../lib/const";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 import Cookies from "js-cookie";
 import { getTokenData } from "../../../lib/auth";
+import { API_URL } from "../../../lib/const";
+import useSWR from "swr";
+import pinchos from "../../../pages/api/pinchos";
 
 export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
@@ -39,18 +41,12 @@ export default function BarForm({ Bardata }: any) {
       .required("La informacion no puede estar vacia"),
   });
 
-  async function loadPinchos(inputValue: string) {
-    const pinchos = await axios({
-      method: "GET",
-      url: `/api/pinchos?limit=9999999&offset=0&key=${inputValue}&order=id&direction=ASC`,
-    }).then(function (response) {
-      if (response.data.status) {
-        return response.data;
-      }
-    });
+  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-    return pinchos.data.pinchos;
-  }
+  const { data, error } = useSWR(
+    API_URL + "pinchos?limit=9999999&offset=0&key=&order=id&direction=ASC",
+    fetcher
+  );
 
   function MultiValueLabel(props: MultiValueGenericProps<any, true>) {
     return (
@@ -81,7 +77,7 @@ export default function BarForm({ Bardata }: any) {
     maxSize: 4194304,
   });
 
-  async function uploadImg() {
+  async function uploadImg(id: any) {
     const form = new FormData();
 
     acceptedFiles.forEach((element, index) => {
@@ -92,7 +88,7 @@ export default function BarForm({ Bardata }: any) {
 
     if (tokenData?.rol === "admin") {
       const response = await axios.post(
-        API_URL + `uploadImagesBar?id=${Bardata.id}`,
+        API_URL + `uploadImagesBar?id=${id}`,
         form
       );
 
@@ -113,6 +109,35 @@ export default function BarForm({ Bardata }: any) {
     const data = await response.data;
   }
 
+  async function insertBar(data: any) {
+    const response = await axios({
+      method: "POST",
+      url: "/api/insertBar",
+      data: data,
+    });
+
+    return await response.data;
+  }
+
+  async function getLastBar() {
+    const bar = await axios({
+      method: "GET",
+      url: "/api/bares?limit=1&offset=0&key=&order=id&direction=DESC",
+    });
+
+    return bar.data.data.bares[0];
+  }
+
+  async function updateBar(data: any) {
+    const response = await axios({
+      method: "POST",
+      url: "/api/updateBar",
+      data: data,
+    });
+
+    return response.data;
+  }
+
   return (
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
       <Formik
@@ -126,25 +151,14 @@ export default function BarForm({ Bardata }: any) {
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          const response = await axios({
-            method: "POST",
-            url: "/api/updateBar",
-            data: {
-              bar: values,
-            },
-          })
-            .then(function (response) {
-              if (response.data.status) {
-                return response.data;
-              }
-            })
-            .catch(function (error) {
-              if (!error.response.data.status) {
-                return error.data;
-              }
-            });
-
-          return response;
+          if (Bardata === undefined) {
+            const responseBar = await insertBar(values);
+            const lastBarInserted = await getLastBar();
+            const responseImg = await uploadImg(lastBarInserted.id);
+          } else {
+            const response = await updateBar(values);
+            const responseImg = await uploadImg(values.id);
+          }
         }}
       >
         {({
@@ -159,8 +173,6 @@ export default function BarForm({ Bardata }: any) {
           <Form
             className="bg-white flex space-x-2 relative"
             onSubmit={handleSubmit}
-            encType="multipart/form-data"
-            method="POST"
           >
             <div className="w-1/2 p-2 rounded-md shadow-md border-2 bg-white flex flex-col">
               <div className="flex justify-center space-x-2 mt-4 bg-transparent">
@@ -176,18 +188,21 @@ export default function BarForm({ Bardata }: any) {
                     Subir Imagen ⬆️
                   </p>
                 </div>
-                <div
-                  className={`${
-                    zonaImagen.get() === "galeria"
-                      ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
-                      : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
-                  }`}
-                  onClick={(e) => zonaImagen.set("galeria")}
-                >
-                  <p className="bg-transparent font-roboto text-black text-center font-medium">
-                    Galeria 🖼️
-                  </p>
-                </div>
+
+                {Bardata !== undefined ? (
+                  <div
+                    className={`${
+                      zonaImagen.get() === "galeria"
+                        ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
+                        : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
+                    }`}
+                    onClick={(e) => zonaImagen.set("galeria")}
+                  >
+                    <p className="bg-transparent font-roboto text-black text-center font-medium">
+                      Galeria 🖼️
+                    </p>
+                  </div>
+                ) : null}
               </div>
 
               {zonaImagen.get() === "subir" ? (
@@ -217,19 +232,6 @@ export default function BarForm({ Bardata }: any) {
                       </div>
                     ))}
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={(e) => uploadImg()}
-                    className={`${
-                      acceptedFiles.length > 0
-                        ? "text-white mt-2 bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
-                        : "text-white mt-2 bg-gray-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center"
-                    }`}
-                    disabled={acceptedFiles.length === 0}
-                  >
-                    Subir Imagenes
-                  </button>
                 </React.Fragment>
               ) : null}
 
@@ -357,17 +359,16 @@ export default function BarForm({ Bardata }: any) {
                 >
                   Pinchos
                 </label>
-                <AsyncSelect
+                <Select
                   name="pinchos"
                   id="pinchosBar"
                   isMulti={true}
                   isClearable={true}
                   isSearchable={true}
-                  cacheOptions
                   onChange={(e) => (values.pinchos = e)}
                   menuPlacement="top"
+                  options={data?.data.pinchos}
                   defaultValue={values.pinchos}
-                  loadOptions={loadPinchos}
                   getOptionValue={(option: any) => `${option["id"]}`}
                   getOptionLabel={(option: any) => `${option["nombre"]}`}
                   styles={{

@@ -23,6 +23,12 @@ function Login(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Link href={"/"} as={"/"}>
+        <a className="absolute top-3 left-3 text-black font-roboto font-semibold underline">
+          Volver a inicio
+        </a>
+      </Link>
+
       <div className="h-screen overflow-auto bg-slate-50">
         <div className="max-w-lg mx-auto mt-20">
           <div
@@ -47,7 +53,6 @@ function Login(): JSX.Element {
             initialValues={{ email: "", password: "" }}
             // validationSchema={LoginSchema}
             onSubmit={async (values, { setSubmitting }) => {
-              
               await axios({
                 method: "POST",
 
@@ -58,26 +63,19 @@ function Login(): JSX.Element {
 
                   password: values.password,
                 },
+              })
+                .then(function (response) {
+                  if (response.data) {
+                    Cookies.set("user_token", response.data, { expires: 1 });
 
-              }).then(function (response){
-
-                if(response.data){
-
-                  Cookies.set("user_token", response.data, { expires: 1 });
-
-                  router.push("/admin");
-
-                }
-
-              }).catch(function (error){
-
-                if(!error.response.data.status){
-
-                  loginError.set(true);
-
-                }
-              });
-
+                    router.push("/admin");
+                  }
+                })
+                .catch(function (error) {
+                  if (!error.response.data.status) {
+                    loginError.set(true);
+                  }
+                });
             }}
           >
             {({

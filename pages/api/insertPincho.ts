@@ -2,14 +2,15 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { API_URL } from "../../lib/const";
 
-async function updateBar(req: NextApiRequest, res: NextApiResponse) {
+async function insertPincho(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const { user_token } = req.cookies;
+    
+    const {user_token} = req.cookies;
 
     await axios({
       method: "POST",
 
-      url: API_URL + `updateBar`,
+      url: API_URL + `insertPincho`,
 
       data: req.body,
 
@@ -34,4 +35,4 @@ async function updateBar(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default updateBar;
+export default insertPincho;
