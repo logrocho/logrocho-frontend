@@ -133,6 +133,8 @@ function Login(): JSX.Element {
                     required
                   />
                 </div>
+                
+                {/* //TODO: Si hay errores en el formulario el boton esta en gris */}
                 <button
                   type="submit"
                   disabled={isSubmitting}

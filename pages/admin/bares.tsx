@@ -148,8 +148,10 @@ export default function Page(): JSX.Element {
                 offset.set((p) => p - limit.get());
               }}
               className={`${
-                offset.get() === 0 ? " bg-green-300 " : " bg-green-600 "
-              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-3 rounded-md shadow-md`}
+                offset.get() === 0
+                  ? " m-2 uppercase text-center font-roboto font-medium bg-slate-200 text-gray-300 px-6 py-3 rounded-md shadow-md"
+                  : " m-2 uppercase text-center font-roboto font-medium bg-green-600 text-white px-6 py-3 rounded-md shadow-md"
+              }`}
               disabled={offset.get() === 0}
             >
               Anterior
@@ -182,9 +184,9 @@ export default function Page(): JSX.Element {
               }}
               className={`${
                 offset.get() + limit.get() >= data?.data.count
-                  ? " bg-green-300 "
-                  : " bg-green-600 "
-              }m-2 uppercase text-center font-roboto font-medium text-white px-6 py-1 rounded-md shadow-md`}
+                  ? "m-2 uppercase text-center font-roboto font-medium bg-slate-200 text-gray-300 px-6 py-3 rounded-md shadow-md"
+                  : "m-2 uppercase text-center font-roboto font-medium bg-green-600 text-white px-6 py-3 rounded-md shadow-md"
+              }`}
               disabled={offset.get() + limit.get() >= data?.data.count}
             >
               Siguiente

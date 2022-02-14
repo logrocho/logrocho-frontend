@@ -3,12 +3,13 @@ import * as Yup from "yup";
 import Image from "next/image";
 import { useState } from "@hookstate/core";
 import axios from "axios";
-import { API_URL } from "../../../lib/const";
+import { API_URL, IMG_URL } from "../../../lib/const";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 import Cookies from "js-cookie";
 import { getTokenData } from "../../../lib/auth";
+import { useRouter } from "next/router";
 
 export default function PinchoForm({ Pinchodata }: any) {
   const adminSchema = Yup.object().shape({
@@ -29,6 +30,8 @@ export default function PinchoForm({ Pinchodata }: any) {
   });
 
   const zonaImagen = useState("subir");
+
+  const router = useRouter();
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg, image/png",
@@ -120,6 +123,8 @@ export default function PinchoForm({ Pinchodata }: any) {
             const response = await updatePincho(values);
             const responseImg = await uploadImg(values.id);
           }
+
+          router.reload();
         }}
       >
         {({
@@ -204,7 +209,9 @@ export default function PinchoForm({ Pinchodata }: any) {
                         className="flex flex-col bg-transparent space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"
                       >
                         <Image
-                          src={`http://localhost/logrocho/logrocho-backend/img/img_pinchos/${values.id}/${img.filename}`}
+                          src={
+                            IMG_URL + `img_pinchos/${values.id}/${img.filename}`
+                          }
                           alt={img}
                           key={index}
                           layout="intrinsic"

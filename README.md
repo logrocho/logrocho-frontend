@@ -22,7 +22,9 @@ npm install
 
 ### Iniciar servidor de desarrollo
 
-⚠️ Advertencia, edita el fichero lib/const.ts y en la constante API_URL añade la ruta {XAMPP o WAMP}/index.php/api/ ⚠️
+⚠️ Edita el fichero lib/const.ts y en la constante API_URL añade la ruta {XAMPP o WAMP}/index.php/api/ ⚠️
+
+⚠️ Edita el fichero lib/const.ts y en la constante IMG_URL añade la ruta {XAMPP o WAMP}/img/ ⚠️
 
 Abre un terminal y ejecuta:
 

@@ -19,9 +19,10 @@ import { useDropzone } from "react-dropzone";
 import React from "react";
 import Cookies from "js-cookie";
 import { getTokenData } from "../../../lib/auth";
-import { API_URL } from "../../../lib/const";
+import { API_URL, IMG_URL } from "../../../lib/const";
 import useSWR from "swr";
 import pinchos from "../../../pages/api/pinchos";
+import { useRouter } from "next/router";
 
 export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
@@ -69,6 +70,8 @@ export default function BarForm({ Bardata }: any) {
   }
 
   const zonaImagen = useState("subir");
+
+  const router = useRouter();
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: "image/jpeg, image/png",
@@ -159,6 +162,8 @@ export default function BarForm({ Bardata }: any) {
             const response = await updateBar(values);
             const responseImg = await uploadImg(values.id);
           }
+
+          router.reload();
         }}
       >
         {({
@@ -244,7 +249,9 @@ export default function BarForm({ Bardata }: any) {
                         className="flex flex-col bg-transparent space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"
                       >
                         <Image
-                          src={`http://localhost/logrocho/logrocho-backend/img/img_bares/${values.id}/${img.filename}`}
+                          src={
+                            IMG_URL + `img_bares/${values.id}/${img.filename}`
+                          }
                           alt={img}
                           key={index}
                           layout="intrinsic"

@@ -2,18 +2,17 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { API_URL } from "../../lib/const";
 
-async function deleteUsuario(req: NextApiRequest, res: NextApiResponse) {
+async function insertUsuario(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const { user } = req.body;
-
-    const { user_token } = req.cookies;
+    
+    const {user_token} = req.cookies;
 
     await axios({
       method: "POST",
 
-      url: API_URL + `deleteUsuario`,
+      url: API_URL + `insertUsuario`,
 
-      data: user,
+      data: req.body,
 
       headers: {
         Authorization: `Bearer ${user_token}`,
@@ -36,4 +35,4 @@ async function deleteUsuario(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default deleteUsuario;
+export default insertUsuario;

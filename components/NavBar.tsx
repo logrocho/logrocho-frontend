@@ -1,28 +1,48 @@
 import { useState } from "@hookstate/core";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokenData } from "../lib/auth";
 import { API_URL } from "../lib/const";
 
 function DesktopNavBar({ user }: any) {
+  const router = useRouter();
+
   return (
-    <div className="bg-white border-2 shadow-md m-2 rounded-lg flex items-center justify-between p-5">
-      <div className="bg-transparent flex items-center space-x-5">
-        <Link href={"/home"} as={"/home"}>
-          <a className="text-2xl font-bold text-gray-800 font-caveat bg-transparent">
-            Logrocho
+    <div className="bg-white border-2 space-x-6 shadow-md m-2 rounded-lg flex items-center justify-between p-5">
+      <Link href={"/home"} as={"/home"}>
+        <a className="text-4xl font-bold text-gray-800 font-caveat bg-transparent">
+          Logrocho
+        </a>
+      </Link>
+
+      {/* //TODO: Eliminar console.log */}
+      {console.log(router)}
+
+      <div className="ml-2 space-x-5 grow bg-transparent">
+        <Link href={"/bares"} as={"/bares"}>
+          <a
+            className={`${
+              router.pathname === "/bares"
+                ? "text-white bg-green-600 shadow-md rounded-md px-10 py-2 font-roboto font-bold border-2 border-green-600"
+                : "text-green-600 bg-white shadow-md rounded-md px-10 py-2 font-roboto font-bold border-2 border-green-600"
+            }`}
+          >
+            Bares
           </a>
         </Link>
-
-        <div className="ml-2 space-x-5 bg-transparent">
-          <Link href={"#"} as={"#"}>
-            <a className="navBar_a_desktop">Bares</a>
-          </Link>
-          <Link href={"#"} as={"#"}>
-            <a className="navBar_a_desktop">Pinchos</a>
-          </Link>
-        </div>
+        <Link href={"/pinchos"} as={"/pinchos"}>
+          <a
+            className={`${
+              router.pathname === "/pinchos"
+                ? "text-white bg-green-600 shadow-md rounded-md px-10 py-2 font-roboto font-bold border-2 border-green-600"
+                : "text-green-600 bg-white shadow-md rounded-md px-10 py-2 font-roboto font-bold border-2 border-green-600"
+            }`}
+          >
+            Pinchos
+          </a>
+        </Link>
       </div>
 
       {user.status ? (
@@ -113,11 +133,11 @@ function MobileNavBar() {
 export default function NavBar({ user }: any) {
   return (
     <header>
-      <nav className="hidden sm:block">
+      <nav className="hidden md:block">
         <DesktopNavBar user={user} />
       </nav>
 
-      <nav className="block sm:hidden">
+      <nav className="block md:hidden">
         <MobileNavBar />
       </nav>
     </header>
