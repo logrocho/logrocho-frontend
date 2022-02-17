@@ -7,7 +7,7 @@ import * as Yup from "yup";
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required("El email es obligatorio").email(),
 });
-function Recover(): JSX.Element {
+export default function Recuperar(): JSX.Element {
   return (
     <React.Fragment>
       <Head>
@@ -16,11 +16,13 @@ function Recover(): JSX.Element {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="h-screen overflow-auto bg-slate-50">
-        <div className="max-w-lg mx-auto mt-20">
-          <h1 className="text-black font-roboto font-black text-2xl mb-3 ml-6">
-            Logrocho
+      <div className="py-12 min-h-screen flex flex-col justify-center">
+        <div className="max-w-md w-full mx-auto">
+          <h1 className="text-black font-roboto text-center font-bold text-3xl">
+            Contraseña Olvidada
           </h1>
+        </div>
+        <div className="max-w-md mx-auto mt-8 w-full">
           <Formik
             initialValues={{ email: "" }}
             validationSchema={LoginSchema}
@@ -39,10 +41,10 @@ function Recover(): JSX.Element {
             }) => (
               <Form
                 onSubmit={handleSubmit}
-                className="px-6 py-5 bg-white border shadow-xl rounded-md m-2"
+                className="p-10 bg-white border shadow-xl rounded-md m-2"
               >
-                <p className="text-black bg-white font-medium font-roboto text-xl mb-6 ml-px">
-                  Recuperar cuenta
+                <p className="text-gray-400 bg-white font-roboto text-base mb-4">
+                  Introduce tu email y te enviaremos un enlace para cambiarla.
                 </p>
 
                 <div className="mb-6 bg-transparent">
@@ -67,20 +69,19 @@ function Recover(): JSX.Element {
                 >
                   Recuperar Contraseña
                 </button>
-                <div className="mt-2 bg-white">
-                  <Link href={"/login"} as={"/login"}>
-                    <a className="font-roboto text-sm bg-transparent text-green-600">
-                      Volver al login
-                    </a>
-                  </Link>
-                </div>
               </Form>
             )}
           </Formik>
+          <div className="mt-4 bg-transparent text-center text-neutral-600 font-roboto">
+            ¿Ya tienes una cuenta? {" "}
+            <Link href={"/login"} as={"/login"}>
+              <a className="font-roboto bg-transparent text-green-600">
+                Ir a login
+              </a>
+            </Link>
+          </div>
         </div>
       </div>
     </React.Fragment>
   );
 }
-
-export default Recover;

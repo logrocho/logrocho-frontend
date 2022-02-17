@@ -8,6 +8,7 @@ import React from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { setTimeout } from "timers";
 import * as Yup from "yup";
+import { BiDownArrow } from "react-icons/bi";
 
 export default function Registro() {
   const router = useRouter();
@@ -33,9 +34,6 @@ export default function Registro() {
         "La contraseña tiene al menos 8 caracteres y debe incluir una minúscula,una mayúscula y un dígito"
       )
       .required("La contraseña no puede estar vacia"),
-    passwordConfirm: Yup.string()
-      .oneOf([Yup.ref("password")], "Las contraseñas no coinciden")
-      .required("La contraseña no puede estar vacia"),
   });
 
   return (
@@ -45,16 +43,23 @@ export default function Registro() {
         <meta name="description" content="Logrocho by Sergio Malagon" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Link href={"/"} as={"/"}>
-        <a className="absolute top-3 left-3 text-black font-roboto font-semibold underline">
-          Volver a inicio
-        </a>
-      </Link>
+      <div className="py-12 px-2 lg:px-10 min-h-screen flex items-center mx-auto max-w-7xl">
+        <div className="self-center w-full space-y-3 lg:block hidden mr-10">
+          <h1 className="text-black font-roboto font-black text-xl">
+            Logrocho.com
+          </h1>
+          <h2 className="text-black font-roboto font-semibold text-5xl">
+            Muestrale al mundo tus pinchos favoritos
+          </h2>
+          <p className="text-gray-600 font-roboto font-light">
+            Create una cuenta completamente gratuita y empieza a compartir tus
+            experiencias.
+          </p>
+        </div>
 
-      <div className="h-screen overflow-auto bg-slate-50">
-        <div className="max-w-lg mx-auto mt-20">
-          <h1 className="text-black font-roboto font-black text-2xl mb-3 ml-6">
-            Logrocho
+        <div className="mx-auto w-full max-w-md">
+          <h1 className="text-3xl lg:hidden font-roboto text-black font-medium">
+            Logrocho.com
           </h1>
           <Formik
             initialValues={{
@@ -62,7 +67,6 @@ export default function Registro() {
               apellidos: "",
               correo: "",
               password: "",
-              passwordConfirm: "",
             }}
             validationSchema={registerSchema}
             onSubmit={async (values, { setSubmitting }) => {
@@ -87,7 +91,9 @@ export default function Registro() {
                 });
 
                 if (loginResponse.data) {
-                  Cookies.set("user_token", loginResponse.data, { expires: 1 });
+                  Cookies.set("user_token", loginResponse.data, {
+                    expires: 1,
+                  });
 
                   router.push("/"); //TODO: Cambiar la redireccion al perfil del usuario
                 }
@@ -97,6 +103,7 @@ export default function Registro() {
             {({
               values,
               errors,
+              isValid,
               touched,
               handleChange,
               handleBlur,
@@ -105,16 +112,12 @@ export default function Registro() {
             }) => (
               <Form
                 onSubmit={handleSubmit}
-                className="px-6 py-5 bg-white border shadow-xl rounded-md m-2"
+                className="p-10 bg-white border shadow-xl rounded-md mt-5"
               >
-                <p className="text-slate-700 bg-white font-medium font-roboto text-xl mb-6 ml-px">
-                  Crear cuenta
-                </p>
-
                 <div className="mb-6 bg-transparent">
                   <label
                     htmlFor="nombre"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900 dark:text-gray-300"
+                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
                   >
                     Nombre
                   </label>
@@ -122,7 +125,7 @@ export default function Registro() {
                     as="input"
                     type="text"
                     name="nombre"
-                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
                   />
                   <ErrorMessage
@@ -135,7 +138,7 @@ export default function Registro() {
                 <div className="mb-6 bg-transparent">
                   <label
                     htmlFor="apellidos"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900 dark:text-gray-300"
+                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
                   >
                     Apellidos
                   </label>
@@ -143,7 +146,7 @@ export default function Registro() {
                     as="input"
                     type="text"
                     name="apellidos"
-                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
                   />
                   <ErrorMessage
@@ -156,7 +159,7 @@ export default function Registro() {
                 <div className="mb-6 bg-transparent">
                   <label
                     htmlFor="correo"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900 dark:text-gray-300"
+                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
                   >
                     Correo
                   </label>
@@ -164,7 +167,7 @@ export default function Registro() {
                     as="input"
                     type="email"
                     name="correo"
-                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
                   />
                   <ErrorMessage
@@ -177,7 +180,7 @@ export default function Registro() {
                 <div className="mb-6 bg-transparent">
                   <label
                     htmlFor="password"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900 dark:text-gray-300"
+                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
                   >
                     Contraseña
                   </label>
@@ -185,7 +188,7 @@ export default function Registro() {
                     as="input"
                     type="password"
                     name="password"
-                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
                   />
                   <ErrorMessage
@@ -195,32 +198,10 @@ export default function Registro() {
                   />
                 </div>
 
-                <div className="mb-6 bg-transparent">
-                  <label
-                    htmlFor="passwordConfirm"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Introduce la contraseña de nuevo
-                  </label>
-                  <Field
-                    as="input"
-                    type="password"
-                    name="passwordConfirm"
-                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required
-                  />
-                  <ErrorMessage
-                    component="span"
-                    name="passwordConfirm"
-                    className="text-red-500 bg-white font-roboto text-xs"
-                  />
-                </div>
-
-                {/* //TODO: Si hay errores en el formulario el boton esta en gris */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
+                  className="text-white bg-green-700 cursor-pointer hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
                 >
                   {isSubmitting ? (
                     <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />

@@ -178,7 +178,7 @@ export default function Page(): JSX.Element {
             {!data ? <div>Cargando....</div> : null}
 
             <table className="table-auto w-full">
-              <thead className="bg-gray-100 dark:bg-gray-700">
+              <thead className="bg-gray-100">
                 <tr className="border-b-2 ">
                   <th
                     id="id"

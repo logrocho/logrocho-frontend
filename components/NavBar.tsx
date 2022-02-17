@@ -48,7 +48,7 @@ function DesktopNavBar({ user }: any) {
       {user.status ? (
         <Link href={"/"}>
           <a className="bg-transparent flex items-center">
-            <p className="mx-2 font-roboto bg-transparent text-sm capitalize font-medium text-gray-700 dark:text-gray-200 ">
+            <p className="mx-2 font-roboto bg-transparent text-sm capitalize font-medium text-gray-700">
               {user.data.nombre} {user.data.apellidos}
             </p>
             <div className="w-8 h-8 bg-black overflow-hidden border-2 border-gray-400 rounded-full">
@@ -92,7 +92,7 @@ function MobileNavBar() {
         <div className="flex md:hidden">
           <button
             type="button"
-            className="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400"
+            className="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600"
             aria-label="toggle menu"
           >
             <GiHamburgerMenu onClick={(e) => menuOpen.set(!menuOpen.get())} />
@@ -121,7 +121,7 @@ function MobileNavBar() {
             }
           </div>
 
-          <h3 className="mx-2 font-roboto bg-transparent text-sm font-medium text-gray-700 dark:text-gray-200 ">
+          <h3 className="mx-2 font-roboto bg-transparent text-sm font-medium text-gray-700">
             Sergio Malagon
           </h3>
         </button>
