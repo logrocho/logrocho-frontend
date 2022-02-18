@@ -114,10 +114,10 @@ export default function Registro() {
                 onSubmit={handleSubmit}
                 className="p-10 bg-white border shadow-xl rounded-md mt-5"
               >
-                <div className="mb-6 bg-transparent">
+                <div className="mb-6  ">
                   <label
                     htmlFor="nombre"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                    className="block mb-2 text-sm   font-medium text-gray-900"
                   >
                     Nombre
                   </label>
@@ -135,10 +135,10 @@ export default function Registro() {
                   />
                 </div>
 
-                <div className="mb-6 bg-transparent">
+                <div className="mb-6  ">
                   <label
                     htmlFor="apellidos"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                    className="block mb-2 text-sm   font-medium text-gray-900"
                   >
                     Apellidos
                   </label>
@@ -156,10 +156,10 @@ export default function Registro() {
                   />
                 </div>
 
-                <div className="mb-6 bg-transparent">
+                <div className="mb-6  ">
                   <label
                     htmlFor="correo"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                    className="block mb-2 text-sm   font-medium text-gray-900"
                   >
                     Correo
                   </label>
@@ -177,10 +177,10 @@ export default function Registro() {
                   />
                 </div>
 
-                <div className="mb-6 bg-transparent">
+                <div className="mb-6  ">
                   <label
                     htmlFor="password"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                    className="block mb-2 text-sm   font-medium text-gray-900"
                   >
                     Contraseña
                   </label>
@@ -204,9 +204,9 @@ export default function Registro() {
                   className="text-white bg-green-700 cursor-pointer hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
                 >
                   {isSubmitting ? (
-                    <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />
+                    <AiOutlineLoading3Quarters className="animate-spin   mx-auto text-lg" />
                   ) : (
-                    <span className="bg-transparent">Crear cuenta</span>
+                    <span className=" ">Crear cuenta</span>
                   )}
                 </button>
               </Form>

@@ -78,10 +78,10 @@ function Login(): JSX.Element {
                   Iniciar sesion en tu cuenta
                 </p>
 
-                <div className="mb-6 bg-transparent">
+                <div className="mb-6  ">
                   <label
                     htmlFor="email"
-                    className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                    className="block mb-2 text-sm   font-medium text-gray-900"
                   >
                     Email
                   </label>
@@ -94,16 +94,16 @@ function Login(): JSX.Element {
                   />
                 </div>
 
-                <div className="mb-6 bg-transparent">
-                  <div className="flex flex-wrap items-baseline justify-between bg-transparent">
+                <div className="mb-6  ">
+                  <div className="flex flex-wrap items-baseline justify-between  ">
                     <label
                       htmlFor="password"
-                      className="block mb-2 mr-2 bg-transparent text-sm font-medium text-gray-900"
+                      className="block mb-2 mr-2   text-sm font-medium text-gray-900"
                     >
                       Contraseña
                     </label>
                     <Link href={"/recuperar"} as={"/recuperar"}>
-                      <a className="text-green-400 bg-transparent font-roboto font-semibold text-xs mr-2">
+                      <a className="text-green-400   font-roboto font-semibold text-xs mr-2">
                         ¿Has olvidado la contraseña?
                       </a>
                     </Link>
@@ -117,7 +117,6 @@ function Login(): JSX.Element {
                   />
                 </div>
 
-                {/* //TODO: Si hay errores en el formulario el boton esta en gris */}
                 <button
                   type="submit"
                   disabled={isSubmitting}

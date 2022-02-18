@@ -18,7 +18,7 @@ export default function ContactoPage({ user }: any) {
       </Head>
 
       <Layout user={user}>
-        <div className="mx-auto p-5 grow my-10">
+        <div className="mx-auto p-5 my-10">
           <h1 className="text-center text-black font-roboto font-bold text-6xl">
             Contacto
           </h1>
@@ -28,32 +28,32 @@ export default function ContactoPage({ user }: any) {
 
           <div className="flex justify-center flex-col lg:flex-row rounded-md shadow-md mx-auto max-w-5xl bg-white mt-10">
             <div className="bg-gradient-to-tr from-green-400 via-green-500 to-green-900 p-10 m-2 lg:w-1/2 rounded-md">
-              <h1 className="text-3xl font-roboto text-white bg-transparent font-bold">
+              <h1 className="text-3xl font-roboto text-white   font-bold">
                 Informacion de contacto
               </h1>
-              <p className="text-2xl font-light font-roboto text-white bg-transparent mt-5">
+              <p className="text-2xl font-light font-roboto text-white   mt-5">
                 Rellena el formulario y nos pondremos en contacto en menos de 24
                 horas
               </p>
 
-              <div className="mt-14 bg-transparent space-y-10">
-                <div className="flex items-center bg-transparent">
-                  <BsFillTelephoneFill className="bg-transparent text-white text-2xl" />
-                  <span className="text-white bg-transparent ml-2 font-roboto font-semibold text-xl">
+              <div className="mt-14   space-y-10">
+                <div className="flex items-center  ">
+                  <BsFillTelephoneFill className="  text-white text-2xl" />
+                  <span className="text-white   ml-2 font-roboto font-semibold text-xl">
                     + 34 000 00 00 00
                   </span>
                 </div>
 
-                <div className="flex items-end bg-transparent">
-                  <MdEmail className="bg-transparent text-white text-2xl" />
-                  <span className="text-white bg-transparent ml-2 font-roboto font-semibold text-xl">
+                <div className="flex items-end  ">
+                  <MdEmail className="  text-white text-2xl" />
+                  <span className="text-white   ml-2 font-roboto font-semibold text-xl">
                     correo@test.com
                   </span>
                 </div>
 
-                <div className="flex items-center bg-transparent">
-                  <HiLocationMarker className="bg-transparent text-white text-2xl" />
-                  <span className="text-white bg-transparent ml-2 font-roboto font-semibold text-xl">
+                <div className="flex items-center  ">
+                  <HiLocationMarker className="  text-white text-2xl" />
+                  <span className="text-white   ml-2 font-roboto font-semibold text-xl">
                     Calle Laurel, 1
                   </span>
                 </div>
@@ -80,10 +80,10 @@ export default function ContactoPage({ user }: any) {
                     onSubmit={handleSubmit}
                     className="grid grid-cols-2 grid-rows-3 gap-5 bg-white"
                   >
-                    <div className="mb-6 bg-transparent">
+                    <div className="mb-6  ">
                       <label
                         htmlFor="nombre"
-                        className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                        className="block mb-2 text-sm   font-medium text-gray-900"
                       >
                         Nombre
                       </label>
@@ -96,10 +96,10 @@ export default function ContactoPage({ user }: any) {
                       />
                     </div>
 
-                    <div className="mb-6 bg-transparent">
+                    <div className="mb-6  ">
                       <label
                         htmlFor="apellidos"
-                        className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                        className="block mb-2 text-sm   font-medium text-gray-900"
                       >
                         Apellidos
                       </label>
@@ -112,10 +112,10 @@ export default function ContactoPage({ user }: any) {
                       />
                     </div>
 
-                    <div className="mb-6 bg-transparent">
+                    <div className="mb-6  ">
                       <label
                         htmlFor="email"
-                        className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                        className="block mb-2 text-sm   font-medium text-gray-900"
                       >
                         Email
                       </label>
@@ -128,10 +128,10 @@ export default function ContactoPage({ user }: any) {
                       />
                     </div>
 
-                    <div className="mb-6 bg-transparent">
+                    <div className="mb-6  ">
                       <label
                         htmlFor="telefono"
-                        className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                        className="block mb-2 text-sm   font-medium text-gray-900"
                       >
                         Telefono
                       </label>
@@ -144,10 +144,10 @@ export default function ContactoPage({ user }: any) {
                       />
                     </div>
 
-                    <div className="col-span-2 mb-6 bg-transparent">
+                    <div className="col-span-2 mb-6  ">
                       <label
                         htmlFor="mennsaje"
-                        className="block mb-2 text-sm bg-transparent font-medium text-gray-900"
+                        className="block mb-2 text-sm   font-medium text-gray-900"
                       >
                         Mensaje
                       </label>

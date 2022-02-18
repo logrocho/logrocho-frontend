@@ -43,17 +43,17 @@ export default function Page(): JSX.Element {
     }
   );
 
-  const { mutate } = useSWRConfig();
-
   const nuevoPincho = useState(false);
 
-  function mostrarForm(indexForm: number) {
+  const router = useRouter();
+
+  function mostrarForm(indexForm) {
     showForm.set(!showForm.get());
 
     form.set(indexForm);
   }
 
-  function cambiarOrden(columna: any) {
+  function cambiarOrden(columna) {
     if (order.get() === columna.target.id) {
       if (direction.get() === "ASC") {
         direction.set("DESC");
@@ -66,14 +66,8 @@ export default function Page(): JSX.Element {
     }
   }
 
-  function eliminarPincho(pincho: any) {
-    mutate(
-      `/api/pinchos?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
-      { ...data },
-      false
-    );
-
-    axios({
+  async function eliminarPincho(pincho) {
+    await axios({
       method: "POST",
       url: "/api/deletePincho",
       data: {
@@ -81,9 +75,7 @@ export default function Page(): JSX.Element {
       },
     });
 
-    mutate(
-      `/api/pinchos?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`
-    );
+    router.reload();
   }
 
   return (
@@ -95,11 +87,11 @@ export default function Page(): JSX.Element {
       </Head>
 
       <nav className="px-10 py-3 bg-white m-2 rounded-md shadow-md flex flex-row flex-wrap justify-between items-center">
-        <h1 className="text-black font-caveat font-bold text-6xl bg-transparent">
+        <h1 className="text-black font-caveat font-bold text-6xl  ">
           Logrocho
         </h1>
 
-        <div className="flex flex-row flex-wrap bg-transparent items-center space-x-5">
+        <div className="flex flex-row flex-wrap   items-center space-x-5">
           <Link href={"/admin/bares"} as={"/admin/bares"}>
             <a className="admin_nav">Bares</a>
           </Link>
@@ -126,10 +118,10 @@ export default function Page(): JSX.Element {
       <div className="mx-auto max-w-screen-2xl">
         <div className="bg-white m-2 p-2 shadow-md rounded-lg border-2">
           <div className="py-5 rounded-md shadow-md bg-white my-2 grid-cols border-2">
-            <div className="flex items-center justify-center space-x-8 bg-transparent">
+            <div className="flex items-center justify-center space-x-8  ">
               <label
                 htmlFor="filtroNombre"
-                className="bg-transparent font-medium font-roboto text-xl"
+                className="  font-medium font-roboto text-xl"
               >
                 Filtrar por nombre
               </label>
@@ -157,10 +149,10 @@ export default function Page(): JSX.Element {
             >
               Anterior
             </button>
-            <div className="bg-transparent px-4">
+            <div className="  px-4">
               <label
                 htmlFor="paginacion"
-                className="font-roboto text-lg bg-transparent text-black mr-2 "
+                className="font-roboto text-lg   text-black mr-2 "
               >
                 Numero de resultados:
               </label>
@@ -257,7 +249,7 @@ export default function Page(): JSX.Element {
                 </tr>
               </thead>
               <tbody>
-                {data?.data.pinchos.map((pincho: any, index: number) => (
+                {data?.data.pinchos.map((pincho, index: number) => (
                   <React.Fragment key={index}>
                     <tr className="border-b-2">
                       <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">

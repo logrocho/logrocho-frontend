@@ -4,17 +4,14 @@ import { API_URL } from "../../lib/const";
 
 async function updateResena(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    
-    const { resena } = req.body;
-
-    const {user_token} = req.cookies;
+    const { user_token } = req.cookies;
 
     await axios({
       method: "POST",
 
       url: API_URL + `updateResena`,
 
-      data: resena,
+      data: req.body,
 
       headers: {
         Authorization: `Bearer ${user_token}`,

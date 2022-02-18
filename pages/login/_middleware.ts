@@ -7,8 +7,11 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
   const data = await getTokenData(user_token);
 
   if (data) {
+    const url = req.nextUrl.clone();
+
+    url.pathname = "/admin/bares";
     //TODO: En un futuro esta redireccion sera para ir al perfil
-    return NextResponse.redirect("/admin/bares");
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();

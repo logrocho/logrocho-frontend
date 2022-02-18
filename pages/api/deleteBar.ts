@@ -5,8 +5,6 @@ import { API_URL } from "../../lib/const";
 async function deleteBar(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     
-    const { bar } = req.body;
-
     const {user_token} = req.cookies;
 
     await axios({
@@ -14,7 +12,7 @@ async function deleteBar(req: NextApiRequest, res: NextApiResponse) {
 
       url: API_URL + `deleteBar`,
 
-      data: bar,
+      data: req.body,
 
       headers: {
         Authorization: `Bearer ${user_token}`,

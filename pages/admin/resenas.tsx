@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "@hookstate/core";
 import useSWR, { SWRConfig, useSWRConfig } from "swr";
 import ResenaForm from "../../components/admin/forms/ResenaForm";
+import { useRouter } from "next/router";
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -35,7 +36,7 @@ export default function Page(): JSX.Element {
     }
   );
 
-  const { mutate } = useSWRConfig();
+  const router = useRouter();
 
   function mostrarForm(indexForm: number) {
     showForm.set(!showForm.get());
@@ -56,14 +57,8 @@ export default function Page(): JSX.Element {
     }
   }
 
-  function eliminarResena(resena: any) {
-    mutate(
-      `/api/resenas?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
-      { ...data },
-      false
-    );
-
-    axios({
+  async function eliminarResena(resena: any) {
+    await axios({
       method: "POST",
       url: "/api/deleteResena",
       data: {
@@ -71,9 +66,7 @@ export default function Page(): JSX.Element {
       },
     });
 
-    mutate(
-      `/api/resenas?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`
-    );
+    router.reload();
   }
 
   return (
@@ -85,11 +78,11 @@ export default function Page(): JSX.Element {
       </Head>
 
       <nav className="px-10 py-3 bg-white m-2 rounded-md shadow-md flex flex-row flex-wrap justify-between items-center">
-        <h1 className="text-black font-caveat font-bold text-6xl bg-transparent">
+        <h1 className="text-black font-caveat font-bold text-6xl  ">
           Logrocho
         </h1>
 
-        <div className="flex flex-row flex-wrap bg-transparent items-center space-x-5">
+        <div className="flex flex-row flex-wrap   items-center space-x-5">
           <Link href={"/admin/bares"} as={"/admin/bares"}>
             <a className="admin_nav">Bares</a>
           </Link>
@@ -116,10 +109,10 @@ export default function Page(): JSX.Element {
       <div className="mx-auto max-w-screen-2xl">
         <div className="bg-white m-2 p-2 shadow-md rounded-lg border-2">
           <div className="py-5 rounded-md shadow-md bg-white my-2 grid-cols border-2">
-            <div className="flex items-center justify-center space-x-8 bg-transparent">
+            <div className="flex items-center justify-center space-x-8  ">
               <label
                 htmlFor="filtroNombre"
-                className="bg-transparent font-medium font-roboto text-xl"
+                className="  font-medium font-roboto text-xl"
               >
                 Filtrar por nombre
               </label>
@@ -147,10 +140,10 @@ export default function Page(): JSX.Element {
             >
               Anterior
             </button>
-            <div className="bg-transparent px-4">
+            <div className="  px-4">
               <label
                 htmlFor="paginacion"
-                className="font-roboto text-lg bg-transparent text-black mr-2 "
+                className="font-roboto text-lg   text-black mr-2 "
               >
                 Numero de resultados:
               </label>

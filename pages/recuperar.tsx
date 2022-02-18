@@ -47,7 +47,7 @@ export default function Recuperar(): JSX.Element {
                   Introduce tu email y te enviaremos un enlace para cambiarla.
                 </p>
 
-                <div className="mb-6 bg-transparent">
+                <div className="mb-6  ">
                   <label
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-black bg-white"
@@ -72,10 +72,10 @@ export default function Recuperar(): JSX.Element {
               </Form>
             )}
           </Formik>
-          <div className="mt-4 bg-transparent text-center text-neutral-600 font-roboto">
+          <div className="mt-4   text-center text-neutral-600 font-roboto">
             ¿Ya tienes una cuenta? {" "}
             <Link href={"/login"} as={"/login"}>
-              <a className="font-roboto bg-transparent text-green-600">
+              <a className="font-roboto   text-green-600">
                 Ir a login
               </a>
             </Link>

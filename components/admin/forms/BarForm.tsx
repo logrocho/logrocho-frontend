@@ -60,7 +60,7 @@ export default function BarForm({ Bardata }: any) {
   function MultiValueRemove(props: MultiValueRemoveProps<any, true>) {
     return (
       <components.MultiValueRemove {...props}>
-        <AiFillCloseCircle className="bg-transparent text-red-600" />
+        <AiFillCloseCircle className="  text-red-600" />
       </components.MultiValueRemove>
     );
   }
@@ -180,16 +180,16 @@ export default function BarForm({ Bardata }: any) {
             onSubmit={handleSubmit}
           >
             <div className="w-1/2 p-2 rounded-md shadow-md border-2 bg-white flex flex-col">
-              <div className="flex justify-center space-x-2 mt-4 bg-transparent">
+              <div className="flex justify-center space-x-2 mt-4  ">
                 <div
                   className={`${
                     zonaImagen.get() === "subir"
-                      ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
-                      : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
+                      ? "border-2 border-green-600   rounded-full p-1 w-full"
+                      : "border-2 border-gray-300   rounded-full p-1 cursor-pointer w-full"
                   }`}
                   onClick={(e) => zonaImagen.set("subir")}
                 >
-                  <p className="bg-transparent font-roboto text-black text-center font-medium">
+                  <p className="  font-roboto text-black text-center font-medium">
                     Subir Imagen ⬆️
                   </p>
                 </div>
@@ -198,12 +198,12 @@ export default function BarForm({ Bardata }: any) {
                   <div
                     className={`${
                       zonaImagen.get() === "galeria"
-                        ? "border-2 border-green-600 bg-transparent rounded-full p-1 w-full"
-                        : "border-2 border-gray-300 bg-transparent rounded-full p-1 cursor-pointer w-full"
+                        ? "border-2 border-green-600   rounded-full p-1 w-full"
+                        : "border-2 border-gray-300   rounded-full p-1 cursor-pointer w-full"
                     }`}
                     onClick={(e) => zonaImagen.set("galeria")}
                   >
-                    <p className="bg-transparent font-roboto text-black text-center font-medium">
+                    <p className="  font-roboto text-black text-center font-medium">
                       Galeria 🖼️
                     </p>
                   </div>
@@ -223,7 +223,7 @@ export default function BarForm({ Bardata }: any) {
                     </p>
                   </div>
 
-                  <h1 className="font-roboto text-black text-sm ml-1 bg-transparent mt-3">
+                  <h1 className="font-roboto text-black text-sm ml-1   mt-3">
                     Imagenes acceptadas
                   </h1>
 
@@ -246,7 +246,7 @@ export default function BarForm({ Bardata }: any) {
                     {Bardata?.img.map((img: any, index: number) => (
                       <div
                         key={index}
-                        className="flex flex-col bg-transparent space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"
+                        className="flex flex-col   space-y-2 border p-2 rounded hover:shadow-lg hover:border-0"
                       >
                         <Image
                           src={
@@ -421,9 +421,9 @@ export default function BarForm({ Bardata }: any) {
                 className="text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
               >
                 {isSubmitting ? (
-                  <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />
+                  <AiOutlineLoading3Quarters className="animate-spin   mx-auto text-lg" />
                 ) : (
-                  <span className="bg-transparent">
+                  <span className=" ">
                     {Bardata === undefined ? "Crear" : "Actualizar"}
                   </span>
                 )}

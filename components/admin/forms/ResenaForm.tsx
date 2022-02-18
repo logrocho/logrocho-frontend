@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import React from "react";
+import { useRouter } from "next/router";
 
 export default function ResenaForm({ ResenaData }: any) {
   const adminSchema = Yup.object().shape({
@@ -11,6 +12,8 @@ export default function ResenaForm({ ResenaData }: any) {
       .max(150, "El mensaje no puede tener mas de 150 letras")
       .required("El mensaje no puede estar vacio"),
   });
+
+  const router = useRouter();
 
   return (
     <div className="bg-white py-5 px-3 rounded-md m-2 shadow-md border-2">
@@ -24,25 +27,13 @@ export default function ResenaForm({ ResenaData }: any) {
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          const response = await axios({
+          await axios({
             method: "POST",
             url: "/api/updateResena",
-            data: {
-              resena: values,
-            },
-          })
-            .then(function (response) {
-              if (response.data.status) {
-                return response.data;
-              }
-            })
-            .catch(function (error) {
-              if (!error.response.data.status) {
-                return error.data;
-              }
-            });
+            data: values,
+          });
 
-          return response;
+          router.reload();
         }}
       >
         {({
@@ -154,9 +145,9 @@ export default function ResenaForm({ ResenaData }: any) {
                 className="text-white bg-green-800 hover:bg-green-900 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
               >
                 {isSubmitting ? (
-                  <AiOutlineLoading3Quarters className="animate-spin bg-transparent mx-auto text-lg" />
+                  <AiOutlineLoading3Quarters className="animate-spin   mx-auto text-lg" />
                 ) : (
-                  <span className="bg-transparent">Actualizar</span>
+                  <span className=" ">Actualizar</span>
                 )}
               </button>
             </div>

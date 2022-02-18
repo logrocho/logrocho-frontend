@@ -7,14 +7,26 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
   if (data) {
     if (data?.rol === "admin") {
       if (req.nextUrl.pathname === "/admin") {
-        return NextResponse.redirect("/admin/bares");
+        console.log(req.nextUrl)
+        const url = req.nextUrl.clone();
+
+        url.pathname = "/admin/bares";
+
+        return NextResponse.redirect(url);
       }
 
       return NextResponse.next();
     }
 
-    return NextResponse.redirect("/login");
+    const url = req.nextUrl.clone();
+
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
   }
 
-  return NextResponse.redirect("/login");
+  const url = req.nextUrl.clone();
+
+  url.pathname = "/login";
+
+  return NextResponse.redirect(url);
 }
