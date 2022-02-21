@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
 import { API_URL, IMG_URL } from "../../lib/const";
-import bar from "../api/bar";
 import Image from "next/image";
 import "swiper/css/bundle";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -25,6 +24,12 @@ export async function getServerSideProps(context) {
   });
 
   const bar = responseBar.data;
+
+  if (!bar.data) {
+    return {
+      notFound: true,
+    }
+  }
 
   const { user_token } = context.req.cookies;
 
@@ -68,13 +73,13 @@ export default function BarDetail({ bar, user }) {
                   loop={true}
                   className="rounded-md"
                 >
-                  {bar.data.img.map((img, index) => (
-                    <SwiperSlide key={index}>
+                  {bar.data.img.length === 0 ? (
+                    <SwiperSlide>
                       <Image
                         src={
-                          IMG_URL + `/img_bares/${bar.data.id}/${img.filename}`
+                          "https://via.placeholder.com/468?text=Imagen+no+disponible"
                         }
-                        alt={img.filename}
+                        alt={"placeholder"}
                         layout="responsive"
                         height={1}
                         width={2}
@@ -83,7 +88,25 @@ export default function BarDetail({ bar, user }) {
                         priority={true}
                       />
                     </SwiperSlide>
-                  ))}
+                  ) : (
+                    bar.data.img.map((img, index) => (
+                      <SwiperSlide key={index}>
+                        <Image
+                          src={
+                            IMG_URL +
+                            `/img_bares/${bar.data.id}/${img.filename}`
+                          }
+                          alt={img.filename}
+                          layout="responsive"
+                          height={1}
+                          width={2}
+                          objectFit="cover"
+                          className="rounded-md"
+                          priority={true}
+                        />
+                      </SwiperSlide>
+                    ))
+                  )}
                 </Swiper>
                 <div className="px-4 py-2 bg-white rounded-md shadow-md border-2">
                   <div className="flex items-center space-x-2">
@@ -127,10 +150,12 @@ export default function BarDetail({ bar, user }) {
                     >
                       <Image
                         src={
-                          IMG_URL +
-                          `/img_pinchos/${pincho.id}/${pincho.img[0].filename}`
+                          pincho.img.length > 0
+                            ? IMG_URL +
+                              `/img_pinchos/${pincho.id}/${pincho.img[0].filename}`
+                            : `https://via.placeholder.com/468?text=Imagen+no+disponible`
                         }
-                        alt={pincho.img[0].filename}
+                        alt={`${pincho.img.length > 0 ? pincho.img[0].filename : "placeholder"}`}
                         layout="fill"
                         objectFit="cover"
                         objectPosition="left"

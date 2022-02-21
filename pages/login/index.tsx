@@ -9,6 +9,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState } from "@hookstate/core";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 function Login(): JSX.Element {
   const router = useRouter();
@@ -47,11 +48,11 @@ function Login(): JSX.Element {
                   password: values.password,
                 },
               })
-                .then(function (response) {
+                .then(async function (response) {
                   if (response.data) {
                     Cookies.set("user_token", response.data, { expires: 1 });
 
-                    router.push("/admin");
+                    await router.push("/admin");
                   }
                 })
                 .catch(function (error) {
@@ -122,7 +123,11 @@ function Login(): JSX.Element {
                   disabled={isSubmitting}
                   className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full  px-5 py-2.5 text-center shadow-green-400 shadow-md"
                 >
-                  Iniciar Sesion
+                  {isSubmitting ? (
+                    <AiOutlineLoading3Quarters className="animate-spin   mx-auto text-lg" />
+                  ) : (
+                    <span>Iniciar Sesion</span>
+                  )}
                 </button>
               </Form>
             )}

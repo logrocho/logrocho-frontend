@@ -15,13 +15,13 @@ export default function Registro() {
 
   const registerSchema = Yup.object().shape({
     nombre: Yup.string()
-      .min(4, "El nombre tiene que tener mas de 4 letras")
+      .min(1, "El nombre tiene que tener mas de 1 letra")
       .max(15, "El nombre no puede tener mas de 15 letras")
       .required("El nombre no puede estar vacio"),
 
     apellidos: Yup.string()
-      .min(10, "Los apellidos tienen que tener mas de 10 letras")
-      .required("Los apellidos no pueden estar vacio"),
+      .matches(/^[A-Za-z]+$/, "Los apellidos no pueden estar vacios")
+      .required("Los apellidos no pueden estar vacios"),
 
     correo: Yup.string()
       .email("La direccion de correo no es correcta")
@@ -95,7 +95,7 @@ export default function Registro() {
                     expires: 1,
                   });
 
-                  router.push("/"); //TODO: Cambiar la redireccion al perfil del usuario
+                  await router.push("/"); //TODO: Cambiar la redireccion al perfil del usuario
                 }
               }
             }}

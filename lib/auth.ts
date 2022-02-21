@@ -4,6 +4,7 @@ export async function getTokenData(token: string) {
   interface TokenData {
     correo: string;
     rol: string;
+    id: number;
   }
 
   if (!token) {

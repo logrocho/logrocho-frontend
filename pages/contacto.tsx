@@ -26,7 +26,7 @@ export default function ContactoPage({ user }: any) {
             ¿Tienes alguna pregunta o sugerencia? Escribenos un mensaje!!
           </h2>
 
-          <div className="flex justify-center flex-col lg:flex-row rounded-md shadow-md mx-auto max-w-5xl bg-white mt-10">
+          <div className="flex justify-center flex-col lg:flex-row rounded-md shadow-md mx-auto max-w-5xl bg-white mt-10 border">
             <div className="bg-gradient-to-tr from-green-400 via-green-500 to-green-900 p-10 m-2 lg:w-1/2 rounded-md">
               <h1 className="text-3xl font-roboto text-white   font-bold">
                 Informacion de contacto
