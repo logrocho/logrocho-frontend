@@ -6,15 +6,15 @@ async function bares(req: NextApiRequest, res: NextApiResponse) {
   
   if (req.method === "GET") {
     
-    const { limit } = req.query ?? 9999999999;
+    const { limit } = req.query;
 
-    const { offset } = req.query ?? 0;
+    const { offset } = req.query;
 
-    const { key } = req.query ?? "";
+    const { key } = req.query;
 
-    const { order } = req.query ?? "id";
+    const { order } = req.query;
 
-    const { direction } = req.query ?? "ASC";
+    const { direction } = req.query;
 
     await axios({
 

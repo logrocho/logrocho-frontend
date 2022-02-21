@@ -1,18 +1,43 @@
+import { useState } from "@hookstate/core";
+import axios from "axios";
 import Head from "next/head";
 import React from "react";
+import useSWR from "swr";
 import Layout from "../components/Layout";
+import PinchoComponent from "../components/PinchoComponent";
 import { getTokenData } from "../lib/auth";
 import { API_URL } from "../lib/const";
 
 export default function Pinchos({ user }: any) {
+  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
+  const key = useState("");
+
+  const order = useState("id");
+
+  const { data, error } = useSWR(
+    `/api/pinchos?limit=999999&offset=0&key=${key.get()}&order=${order.get()}&direction=ASC`,
+    fetcher
+  );
+
   return (
     <React.Fragment>
       <Head>
-        <title>Logrocho</title>
+        <title>Pinchos - Logrocho</title>
         <meta name="description" content="Logrocho by Sergio Malagon" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout user={user}></Layout>
+      <Layout user={user}>
+      <div className="container mx-auto">
+          {error || data?.satus ? <p>Error al obtener los datos</p> : null}
+          {!data ? <p>Obteniendo pinchos...</p> : null}
+          <div className="flex flex-wrap justify-center">
+            {data?.data.pinchos.map((pincho, index) => (
+              <PinchoComponent key={index} pincho={pincho} />
+            ))}
+          </div>
+        </div>
+      </Layout>
     </React.Fragment>
   );
 }

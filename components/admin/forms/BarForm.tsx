@@ -28,7 +28,7 @@ export default function BarForm({ Bardata }: any) {
   const adminSchema = Yup.object().shape({
     nombre: Yup.string()
       .min(4, "El nombre tiene que tener mas de 4 letras")
-      .max(15, "El nombre no puede tener mas de 15 letras")
+      .max(30, "El nombre no puede tener mas de 30 letras")
       .required("El nombre no puede estar vacio"),
 
     localizacion: Yup.string()

@@ -4,8 +4,7 @@ import { API_URL } from "../../lib/const";
 
 async function updatePincho(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    
-    const {user_token} = req.cookies;
+    const { user_token } = req.cookies;
 
     await axios({
       method: "POST",

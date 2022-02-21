@@ -10,7 +10,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
     const url = req.nextUrl.clone();
     url.pathname = "/admin/bares";
     //TODO: En un futuro esta redireccion sera para ir al perfil
-    return NextResponse.rewrite(url);
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();

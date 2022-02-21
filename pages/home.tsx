@@ -178,7 +178,7 @@ function LogoutButton() {
   );
 }
 
-function Index({ user }: any): JSX.Element {
+function Index({ user }): JSX.Element {
   return (
     <React.Fragment>
       <Head>

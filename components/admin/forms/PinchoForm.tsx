@@ -111,7 +111,7 @@ export default function PinchoForm({ Pinchodata }: any) {
           puntuacion: Pinchodata?.puntuacion ?? 0,
           ingredientes: Pinchodata?.ingredientes ?? "",
           precio: Pinchodata?.precio ?? 0.0,
-          img: Pinchodata?.img,
+          img: Pinchodata?.img ?? [],
         }}
         validationSchema={adminSchema}
         onSubmit={async (values, { setSubmitting }) => {

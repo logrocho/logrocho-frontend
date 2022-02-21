@@ -2,6 +2,7 @@ import { useState } from "@hookstate/core";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import React from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokenData } from "../lib/auth";
 import { API_URL } from "../lib/const";
@@ -46,18 +47,29 @@ function DesktopNavBar({ user }: any) {
       </div>
 
       {user.status ? (
-        <Link href={"/"}>
-          <a className="  flex items-center">
-            <p className="mx-2 font-roboto   text-sm capitalize font-medium text-gray-700">
-              {user.data.nombre} {user.data.apellidos}
-            </p>
-            <div className="w-8 h-8 bg-black overflow-hidden border-2 border-gray-400 rounded-full">
-              {
-                //TODO: Obtener imagen del perfil
-              }
-            </div>
-          </a>
-        </Link>
+        <React.Fragment>
+          {user.data.rol === "admin" ? (
+            <Link href={"/admin/bares"}>
+              <a className="font-roboto font-medium bg-blue-600 text-white rounded-md py-1 px-4 scale-110">
+                Admin
+              </a>
+            </Link>
+          ) : null}
+
+          {/* TODO: Redireccion al perfil */}
+          <Link href={"/"}>
+            <a className="  flex items-center">
+              <p className="mx-2 font-roboto   text-sm capitalize font-medium text-gray-700">
+                {user.data.nombre} {user.data.apellidos}
+              </p>
+              <div className="w-8 h-8 bg-black overflow-hidden border-2 border-gray-400 rounded-full">
+                {
+                  //TODO: Obtener imagen del perfil
+                }
+              </div>
+            </a>
+          </Link>
+        </React.Fragment>
       ) : (
         <div className="space-x-5">
           <Link href={"/login"} as={"/login"}>
@@ -98,9 +110,7 @@ function MobileNavBar() {
           </button>
         </div>
       </div>
-      <div
-        className={`${menuOpen.get() ? "  space-y-2" : "hidden"}`}
-      >
+      <div className={`${menuOpen.get() ? "  space-y-2" : "hidden"}`}>
         <Link href={"#"} as={"#"}>
           <a className="navBar_a_mobile">Bares</a>
         </Link>
@@ -131,7 +141,7 @@ function MobileNavBar() {
 
 export default function NavBar({ user }: any) {
   return (
-    <header className="sticky top-0 z-50">
+    <header className="">
       <nav className="hidden lg:block">
         <DesktopNavBar user={user} />
       </nav>
