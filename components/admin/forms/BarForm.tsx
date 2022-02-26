@@ -20,7 +20,7 @@ import React from "react";
 import Cookies from "js-cookie";
 import { getTokenData } from "../../../lib/auth";
 import { API_URL, IMG_URL } from "../../../lib/const";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import pinchos from "../../../pages/api/pinchos";
 import { useRouter } from "next/router";
 
@@ -35,6 +35,16 @@ export default function BarForm({ Bardata }: any) {
       .min(10, "La localizacion tiene que tener mas de 10 letras")
       .max(30, "La localizacion no puede tener mas de 30 letras")
       .required("La localizacion no puede estar vacia"),
+
+    latitud: Yup.number()
+      .moreThan(-90, "La latitud no puede ser inferior a -90")
+      .lessThan(90, "La latitud no puede ser superior a 90")
+      .required("La latitud no puede estar vacia"),
+
+    longitud: Yup.number()
+      .moreThan(-180, "La longitud no puede ser inferior a -180")
+      .lessThan(180, "La longitud no puede ser superior a 180")
+      .required("La longitud no puede estar vacia"),
 
     informacion: Yup.string()
       .min(20, "La informacion tiene que tener mas de 20 letras")
@@ -98,7 +108,7 @@ export default function BarForm({ Bardata }: any) {
       const data = await response.data;
     }
   }
-  //TODO: Revalidar llamada cada vez que se borre una imagen
+
   async function removeImg(img: any, e: any) {
     e.currentTarget.parentNode.style.display = "none";
 
@@ -148,6 +158,8 @@ export default function BarForm({ Bardata }: any) {
           id: Bardata?.id ?? "",
           nombre: Bardata?.nombre ?? "",
           localizacion: Bardata?.localizacion ?? "",
+          latitud: Bardata?.latitud ?? "",
+          longitud: Bardata?.longitud ?? "",
           informacion: Bardata?.informacion ?? "",
           pinchos: Bardata?.pinchos ?? [],
           img: Bardata?.img ?? [],
@@ -277,7 +289,7 @@ export default function BarForm({ Bardata }: any) {
             </div>
 
             <div className="w-1/2 p-4 rounded-md shadow-md border-2 bg-white space-y-4">
-              <div className="flex space-x-2 bg-white">
+              <div className="flex gap-x-4 bg-white">
                 <div className="bg-white grow">
                   <label
                     className="font-roboto bg-white font-light text-lg text-black"
@@ -337,6 +349,51 @@ export default function BarForm({ Bardata }: any) {
                 />
               </div>
 
+              <div className="flex gap-x-4">
+                <div className="bg-white w-full">
+                  <label
+                    className="font-roboto bg-white font-light text-lg text-black"
+                    htmlFor="longitudBar"
+                  >
+                    Longitud
+                  </label>
+                  <Field
+                    as="input"
+                    type="number"
+                    id="longitudBar"
+                    name="longitud"
+                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    required
+                  />
+                  <ErrorMessage
+                    component="span"
+                    name="longitud"
+                    className="text-red-500 bg-white font-roboto text-xs"
+                  />
+                </div>
+
+                <div className="bg-white w-full">
+                  <label
+                    className="font-roboto bg-white font-light text-lg text-black"
+                    htmlFor="latitudBar"
+                  >
+                    Latitud
+                  </label>
+                  <Field
+                    type="number"
+                    as="input"
+                    id="latitudBar"
+                    name="latitud"
+                    className="border border-gray-300 bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    required
+                  />
+                  <ErrorMessage
+                    component="span"
+                    name="latitud"
+                    className="text-red-500 bg-white font-roboto text-xs"
+                  />
+                </div>
+              </div>
               <div className="bg-white">
                 <label
                   className="font-roboto bg-white font-light text-lg text-black"

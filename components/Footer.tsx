@@ -11,6 +11,11 @@ export default function Footer() {
               Contacto
             </a>
           </Link>
+          <Link href={"/mapa"} as={"/mapa"}>
+            <a className="rounded-md p-1 focus:ring-2 focus:ring-blue-400 text-base font-roboto text-white hover:text-gray-200 hover:underline">
+              Mapa
+            </a>
+          </Link>
           <Link href={"/"} as={"/"}>
             <a className="rounded-md p-1 focus:ring-2 focus:ring-blue-400 text-base font-roboto text-white hover:text-gray-200 hover:underline">
               Uso de cookies
