@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useState } from "@hookstate/core";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { getTokenData } from "../../lib/auth";
 
 function Login(): JSX.Element {
   const router = useRouter();
@@ -52,7 +53,9 @@ function Login(): JSX.Element {
                   if (response.data) {
                     Cookies.set("user_token", response.data, { expires: 1 });
 
-                    await router.push("/admin");
+                    const tokenData = await getTokenData(response.data);
+
+                    await router.push(`/usuario/${tokenData.id}`);
                   }
                 })
                 .catch(function (error) {

@@ -33,6 +33,7 @@ function Index({ user }): JSX.Element {
                 height={1}
                 objectFit="cover"
                 className="rounded-md"
+                priority={true}
               />
             </div>
             <div className="w-full self-center space-y-10">
@@ -70,6 +71,7 @@ function Index({ user }): JSX.Element {
                 objectFit="cover"
                 objectPosition={"top"}
                 className="rounded-md"
+                priority={true}
               />
             </div>
             <div className="w-full self-center space-y-10">

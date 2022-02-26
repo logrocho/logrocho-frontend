@@ -8,9 +8,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   if (data) {
     const url = req.nextUrl.clone();
-
-    url.pathname = "/admin/bares";
-    //TODO: En un futuro esta redireccion sera para ir al perfil
+    url.pathname = `/usuario/${data.id}`;
     return NextResponse.redirect(url);
   }
 

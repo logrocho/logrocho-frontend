@@ -17,15 +17,11 @@ import PinchoForm from "../../components/admin/forms/PinchoForm";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export default function Page(): JSX.Element {
-  const lastDirection = useState("");
-
   const form = useState<number>(0);
 
   const showForm = useState(false);
 
   const limit = useState(5);
-
-  const key = useState("");
 
   const order = useState("id");
 
@@ -33,13 +29,25 @@ export default function Page(): JSX.Element {
 
   const offset = useState(0);
 
+  const colId = useState(true);
+
+  const colNombre = useState(true);
+
+  const colPuntuacion = useState(true);
+
+  const colIngredientes = useState(true);
+
+  const colPrecio = useState(true);
+
+  const colAdmin = useState(true);
+
   const { data, error } = useSWR(
-    `/api/pinchos?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
+    `/api/pinchos?limit=${limit.get()}&offset=${offset.get()}&key=&order=${order.get()}&direction=${direction.get()}`,
     fetcher,
     {
-      revalidateIfStale: true,
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 
@@ -118,26 +126,74 @@ export default function Page(): JSX.Element {
       <div className="mx-auto max-w-screen-2xl">
         <div className="bg-white m-2 p-2 shadow-md rounded-lg border-2">
           <div className="py-5 rounded-md shadow-md bg-white my-2 grid-cols border-2">
-            <div className="flex items-center justify-center space-x-8  ">
-              <label
-                htmlFor="filtroNombre"
-                className="  font-medium font-roboto text-xl"
-              >
-                Filtrar por nombre
-              </label>
-              <input
-                name="filtroNombre"
-                type="text"
-                className="border-2 border-gray-200 rounded-md"
-                onChange={(e) => key.set(e.target.value)}
-              />
+            <div className="flex justify-between max-w-4xl mx-auto">
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colId">ID</label>
+                <input
+                  type="checkbox"
+                  name="colId"
+                  id="colId"
+                  checked={colId.get()}
+                  onChange={(e) => colId.set(!colId.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colNombre">Nombre</label>
+                <input
+                  type="checkbox"
+                  name="colNombre"
+                  id="colNombre"
+                  checked={colNombre.get()}
+                  onChange={(e) => colNombre.set(!colNombre.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colPuntuacion">Puntuacion</label>
+                <input
+                  type="checkbox"
+                  name="colPuntuacion"
+                  id="colPuntuacion"
+                  checked={colPuntuacion.get()}
+                  onChange={(e) => colPuntuacion.set(!colPuntuacion.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colIngredientes">Ingredientes</label>
+                <input
+                  type="checkbox"
+                  name="colIngredientes"
+                  id="colIngredientes"
+                  checked={colIngredientes.get()}
+                  onChange={(e) => colIngredientes.set(!colIngredientes.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colPrecio">Precio</label>
+                <input
+                  type="checkbox"
+                  name="colPrecio"
+                  id="colPrecio"
+                  checked={colPrecio.get()}
+                  onChange={(e) => colPrecio.set(!colPrecio.get())}
+                />
+              </div>
+
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colAdmin">Administrar</label>
+                <input
+                  type="checkbox"
+                  name="colAdmin"
+                  id="colAdmin"
+                  checked={colAdmin.get()}
+                  onChange={(e) => colAdmin.set(!colAdmin.get())}
+                />
+              </div>
             </div>
           </div>
 
           <div className="bg-white flex justify-between border-2 shadow-md my-2 rounded-md">
             <button
               onClick={(e) => {
-                lastDirection.set("anterior");
                 offset.set((p) => p - limit.get());
               }}
               className={`${
@@ -172,7 +228,6 @@ export default function Page(): JSX.Element {
             </div>
             <button
               onClick={(e) => {
-                lastDirection.set("siguiente");
                 offset.set((p) => p + limit.get());
               }}
               className={`${
@@ -193,94 +248,117 @@ export default function Page(): JSX.Element {
             <table className="table-auto w-full">
               <thead className="bg-gray-100">
                 <tr className="border-b-2 ">
-                  <th
-                    id="id"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    id
-                    {order.get() === "id" ? "(" + direction.get() + ")" : ""}
-                  </th>
-                  <th
-                    id="nombre"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    nombre
-                    {order.get() === "nombre"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-                  <th
-                    id="puntuacion"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    puntuacion
-                    {order.get() === "puntuacion"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-                  <th
-                    id="ingredientes"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    ingredientes
-                    {order.get() === "ingredientes"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
+                  {colId.get() ? (
+                    <th
+                      id="id"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      id
+                      {order.get() === "id" ? "(" + direction.get() + ")" : ""}
+                    </th>
+                  ) : null}
+                  {colNombre.get() ? (
+                    <th
+                      id="nombre"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      nombre
+                      {order.get() === "nombre"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
 
-                  <th
-                    id="precio"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    precio
-                    {order.get() === "precio"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-
-                  <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
-                    Administrar
-                  </th>
+                  {colPuntuacion.get() ? (
+                    <th
+                      id="puntuacion"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      puntuacion
+                      {order.get() === "puntuacion"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colIngredientes.get() ? (
+                    <th
+                      id="ingredientes"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      ingredientes
+                      {order.get() === "ingredientes"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colPrecio.get() ? (
+                    <th
+                      id="precio"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      precio
+                      {order.get() === "precio"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colAdmin.get() ? (
+                    <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
+                      Administrar
+                    </th>
+                  ) : null}
                 </tr>
               </thead>
               <tbody>
                 {data?.data.pinchos.map((pincho, index: number) => (
                   <React.Fragment key={index}>
                     <tr className="border-b-2">
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {pincho.id}
-                      </td>
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {pincho.nombre}
-                      </td>
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {pincho.puntuacion}
-                      </td>
-                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {pincho.ingredientes}
-                      </td>
-                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {pincho.precio}
-                      </td>
-                      <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
-                        <button
-                          onClick={() => mostrarForm(index)}
-                          className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
-                        >
-                          Ver ficha
-                        </button>
-                        <button
-                          onClick={() => eliminarPincho(pincho)}
-                          className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
+                      {colId.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {pincho.id}
+                        </td>
+                      ) : null}
+                      {colNombre.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {pincho.nombre}
+                        </td>
+                      ) : null}
+                      {colPuntuacion.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {pincho.puntuacion}
+                        </td>
+                      ) : null}
+                      {colIngredientes.get() ? (
+                        <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {pincho.ingredientes}
+                        </td>
+                      ) : null}
+                      {colPrecio.get() ? (
+                        <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {pincho.precio}
+                        </td>
+                      ) : null}
+                      {colAdmin.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
+                          <button
+                            onClick={() => mostrarForm(index)}
+                            className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
+                          >
+                            Ver ficha
+                          </button>
+                          <button
+                            onClick={() => eliminarPincho(pincho)}
+                            className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      ) : null}
                     </tr>
 
                     {showForm.get() && form.get() === index ? (

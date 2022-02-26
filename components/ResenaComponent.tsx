@@ -13,13 +13,11 @@ export default function ResenaComponent({ resena }) {
                 src={
                   resena.usuario.img
                     ? IMG_URL +
-                      `/img_usuarios/${resena.usuario.id}/${resena.usuario.img}`
+                      `img_usuarios/${resena.usuario.id}/${resena.usuario.img}`
                     : "https://via.placeholder.com/468?text=Imagen+no+disponible"
                 }
                 alt={resena.usuario.img}
                 layout="fill"
-                height={1}
-                width={1}
                 objectFit="cover"
                 className="rounded-full"
                 priority={true}

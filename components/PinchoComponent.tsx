@@ -37,13 +37,6 @@ export default function PinchoComponent({ pincho }) {
               ⭐ {pincho.puntuacion}
             </p>
           </div>
-          {/* TODO: Pendiente por saber que valores van aqui */}
-          {/* <Link href={"/mapa"} as={"/mapa"}>
-            <a className="flex items-center gap-2 underline underline-offset-1 font-roboto text-red-500">
-              <HiLocationMarker className="text-lg" /> {bar.localizacion}
-            </a>
-          </Link> */}
-          {/* <p className="truncate">{bar.informacion}</p> */}
         </div>
 
         <Link

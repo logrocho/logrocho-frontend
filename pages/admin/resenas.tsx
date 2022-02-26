@@ -10,15 +10,11 @@ import { useRouter } from "next/router";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export default function Page(): JSX.Element {
-  const lastDirection = useState("");
-
   const form = useState<number>(0);
 
   const showForm = useState(false);
 
   const limit = useState(5);
-
-  const key = useState("");
 
   const order = useState("id");
 
@@ -26,8 +22,20 @@ export default function Page(): JSX.Element {
 
   const offset = useState(0);
 
+  const colId = useState(true);
+
+  const colUsuario = useState(true);
+
+  const colPincho = useState(true);
+
+  const colMensaje = useState(true);
+
+  const colPuntuacion = useState(true);
+
+  const colAdmin = useState(true);
+
   const { data, error } = useSWR(
-    `/api/resenas?limit=${limit.get()}&offset=${offset.get()}&key=${key.get()}&order=${order.get()}&direction=${direction.get()}`,
+    `/api/resenas?limit=${limit.get()}&offset=${offset.get()}&key=&order=${order.get()}&direction=${direction.get()}`,
     fetcher,
     {
       revalidateIfStale: true,
@@ -109,26 +117,74 @@ export default function Page(): JSX.Element {
       <div className="mx-auto max-w-screen-2xl">
         <div className="bg-white m-2 p-2 shadow-md rounded-lg border-2">
           <div className="py-5 rounded-md shadow-md bg-white my-2 grid-cols border-2">
-            <div className="flex items-center justify-center space-x-8  ">
-              <label
-                htmlFor="filtroNombre"
-                className="  font-medium font-roboto text-xl"
-              >
-                Filtrar por nombre
-              </label>
-              <input
-                name="filtroNombre"
-                type="text"
-                className="border-2 border-gray-200 rounded-md"
-                onChange={(e) => key.set(e.target.value)}
-              />
+            <div className="flex justify-between max-w-4xl mx-auto">
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colId">ID</label>
+                <input
+                  type="checkbox"
+                  name="colId"
+                  id="colId"
+                  checked={colId.get()}
+                  onChange={(e) => colId.set(!colId.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colUsuario">Usuario</label>
+                <input
+                  type="checkbox"
+                  name="colUsuario"
+                  id="colUsuario"
+                  checked={colUsuario.get()}
+                  onChange={(e) => colUsuario.set(!colUsuario.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colPincho">Pincho</label>
+                <input
+                  type="checkbox"
+                  name="colPincho"
+                  id="colPincho"
+                  checked={colPincho.get()}
+                  onChange={(e) => colPincho.set(!colPincho.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colMensaje">Mensaje</label>
+                <input
+                  type="checkbox"
+                  name="colMensaje"
+                  id="colMensaje"
+                  checked={colMensaje.get()}
+                  onChange={(e) => colMensaje.set(!colMensaje.get())}
+                />
+              </div>
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colPuntuacion">Puntuacion</label>
+                <input
+                  type="checkbox"
+                  name="colPuntuacion"
+                  id="colPuntuacion"
+                  checked={colPuntuacion.get()}
+                  onChange={(e) => colPuntuacion.set(!colPuntuacion.get())}
+                />
+              </div>
+
+              <div className="flex items-center gap-x-2">
+                <label htmlFor="colAdmin">Administrar</label>
+                <input
+                  type="checkbox"
+                  name="colAdmin"
+                  id="colAdmin"
+                  checked={colAdmin.get()}
+                  onChange={(e) => colAdmin.set(!colAdmin.get())}
+                />
+              </div>
             </div>
           </div>
 
           <div className="bg-white flex justify-between border-2 shadow-md my-2 rounded-md">
             <button
               onClick={(e) => {
-                lastDirection.set("anterior");
                 offset.set((p) => p - limit.get());
               }}
               className={`${
@@ -163,7 +219,6 @@ export default function Page(): JSX.Element {
             </div>
             <button
               onClick={(e) => {
-                lastDirection.set("siguiente");
                 offset.set((p) => p + limit.get());
               }}
               className={`${
@@ -184,94 +239,116 @@ export default function Page(): JSX.Element {
             <table className="table-auto w-full">
               <thead className="bg-gray-100">
                 <tr className="border-b-2 ">
-                  <th
-                    id="id"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    id
-                    {order.get() === "id" ? "(" + direction.get() + ")" : ""}
-                  </th>
-                  <th
-                    id="usuario"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    usuario
-                    {order.get() === "usuario"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-                  <th
-                    id="pincho"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    pincho
-                    {order.get() === "pincho"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-                  <th
-                    id="mensaje"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    mensaje
-                    {order.get() === "mensaje"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-
-                  <th
-                    id="puntuacion"
-                    onClick={(e) => cambiarOrden(e)}
-                    className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
-                  >
-                    puntuacion
-                    {order.get() === "puntuacion"
-                      ? "(" + direction.get() + ")"
-                      : ""}
-                  </th>
-
-                  <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
-                    Administrar
-                  </th>
+                  {colId.get() ? (
+                    <th
+                      id="id"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6  cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      id
+                      {order.get() === "id" ? "(" + direction.get() + ")" : ""}
+                    </th>
+                  ) : null}
+                  {colUsuario.get() ? (
+                    <th
+                      id="usuario"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      usuario
+                      {order.get() === "usuario"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colPincho.get() ? (
+                    <th
+                      id="pincho"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      pincho
+                      {order.get() === "pincho"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colMensaje.get() ? (
+                    <th
+                      id="mensaje"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      mensaje
+                      {order.get() === "mensaje"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colPuntuacion.get() ? (
+                    <th
+                      id="puntuacion"
+                      onClick={(e) => cambiarOrden(e)}
+                      className="py-3 px-6 cursor-pointer text-xs font-medium tracking-wider text-left text-black uppercase bg-white"
+                    >
+                      puntuacion
+                      {order.get() === "puntuacion"
+                        ? "(" + direction.get() + ")"
+                        : ""}
+                    </th>
+                  ) : null}
+                  {colAdmin.get() ? (
+                    <th className="py-3 px-6 cursor-pointer text-xs font-medium text-center tracking-wider text-black uppercase bg-white">
+                      Administrar
+                    </th>
+                  ) : null}
                 </tr>
               </thead>
               <tbody>
                 {data?.data.resenas.map((resena: any, index: number) => (
                   <React.Fragment key={index}>
                     <tr className="border-b-2">
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {resena.id}
-                      </td>
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {resena.usuario.nombre}
-                      </td>
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {resena.pincho.nombre}
-                      </td>
-                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {resena.mensaje}
-                      </td>
-                      <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
-                        {resena.puntuacion}
-                      </td>
-                      <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
-                        <button
-                          onClick={() => mostrarForm(index)}
-                          className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
-                        >
-                          Ver ficha
-                        </button>
-                        <button
-                          onClick={() => eliminarResena(resena)}
-                          className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
-                        >
-                          Eliminar
-                        </button>
-                      </td>
+                      {colId.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {resena.id}
+                        </td>
+                      ) : null}
+                      {colUsuario.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {resena.usuario.nombre}
+                        </td>
+                      ) : null}
+                      {colPincho.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {resena.pincho.nombre}
+                        </td>
+                      ) : null}
+                      {colMensaje.get() ? (
+                        <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {resena.mensaje}
+                        </td>
+                      ) : null}
+                      {colPuntuacion.get() ? (
+                        <td className="py-4 px-6 text-sm max-w-0 truncate font-medium text-gray-900 whitespace-nowrap bg-white">
+                          {resena.puntuacion}
+                        </td>
+                      ) : null}
+                      {colAdmin.get() ? (
+                        <td className="py-4 px-6 text-sm font-medium text-center whitespace-nowrap bg-white space-x-2">
+                          <button
+                            onClick={() => mostrarForm(index)}
+                            className="text-green-600 font-roboto text-center uppercase font-medium py-1 px-4 bg-white shadow-md rounded-md border-2 border-green-600"
+                          >
+                            Ver ficha
+                          </button>
+                          <button
+                            onClick={() => eliminarResena(resena)}
+                            className="text-white font-roboto text-center uppercase font-medium py-1 px-4 bg-red-600 shadow-md rounded-md border-2 border-red-600 hover:bg-red-900 hover:border-red-900"
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      ) : null}
                     </tr>
 
                     {showForm.get() && form.get() === index ? (

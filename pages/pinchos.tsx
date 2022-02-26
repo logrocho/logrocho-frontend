@@ -17,7 +17,12 @@ export default function Pinchos({ user }: any) {
 
   const { data, error } = useSWR(
     `/api/pinchos?limit=999999&offset=0&key=${key.get()}&order=${order.get()}&direction=ASC`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   return (
@@ -28,7 +33,7 @@ export default function Pinchos({ user }: any) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout user={user}>
-      <div className="container mx-auto">
+        <div className="container mx-auto">
           {error || data?.satus ? <p>Error al obtener los datos</p> : null}
           {!data ? <p>Obteniendo pinchos...</p> : null}
           <div className="flex flex-wrap justify-center">

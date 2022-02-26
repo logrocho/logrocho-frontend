@@ -9,6 +9,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { setTimeout } from "timers";
 import * as Yup from "yup";
 import { BiDownArrow } from "react-icons/bi";
+import { getTokenData } from "../../lib/auth";
 
 export default function Registro() {
   const router = useRouter();
@@ -95,7 +96,9 @@ export default function Registro() {
                     expires: 1,
                   });
 
-                  await router.push("/"); //TODO: Cambiar la redireccion al perfil del usuario
+                  const tokenData = await getTokenData(loginResponse.data);
+
+                  await router.push(`/usuario/${tokenData.id}`);
                 }
               }
             }}

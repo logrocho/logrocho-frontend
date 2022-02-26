@@ -1,14 +1,22 @@
 import { useState } from "@hookstate/core";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { getTokenData } from "../lib/auth";
-import { API_URL } from "../lib/const";
+import { API_URL, IMG_URL } from "../lib/const";
+import Cookies from "js-cookie";
 
 function DesktopNavBar({ user }: any) {
   const router = useRouter();
+
+  function logout() {
+    Cookies.remove("user_token");
+
+    router.reload();
+  }
 
   return (
     <div className="bg-white border-2 space-x-6 shadow-md m-2 rounded-lg flex items-center justify-between p-5">
@@ -17,10 +25,6 @@ function DesktopNavBar({ user }: any) {
           Logrocho
         </a>
       </Link>
-
-      {/* //TODO: Eliminar console.log */}
-      {console.log(router)}
-
       <div className="ml-2 space-x-5 grow  ">
         <Link href={"/bares"} as={"/bares"}>
           <a
@@ -55,20 +59,38 @@ function DesktopNavBar({ user }: any) {
               </a>
             </Link>
           ) : null}
-
-          {/* TODO: Redireccion al perfil */}
-          <Link href={{
-            pathname: "/usuario/[idUsuario]",
-            query: {idUsuario: user.data.id}
-          }}>
+          <button
+            onClick={(e) => logout()}
+            className="font-roboto text-sm text-white bg-red-600 rounded-md py-1 px-4"
+          >
+            Cerrar Sesion
+          </button>
+          <Link
+            href={{
+              pathname: "/usuario/[idUsuario]",
+              query: { idUsuario: user.data.id },
+            }}
+          >
             <a className="  flex items-center">
               <p className="mx-2 font-roboto   text-sm capitalize font-medium text-gray-700">
                 {user.data.nombre} {user.data.apellidos}
               </p>
               <div className="w-8 h-8 bg-black overflow-hidden border-2 border-gray-400 rounded-full">
-                {
-                  //TODO: Obtener imagen del perfil
-                }
+                <Image
+                  src={
+                    user.data.img !== ""
+                      ? IMG_URL +
+                        `img_usuarios/${user.data.id}/${user.data.img}`
+                      : "https://via.placeholder.com/468?text=Imagen+no+disponible"
+                  }
+                  alt={user.data.img ?? "placeholder"}
+                  layout="responsive"
+                  width={1}
+                  height={1}
+                  objectFit="cover"
+                  className="rounded-full"
+                  priority={true}
+                />
               </div>
             </a>
           </Link>
@@ -94,6 +116,12 @@ function DesktopNavBar({ user }: any) {
 function MobileNavBar({ user }) {
   const router = useRouter();
   const menuOpen = useState<boolean>(false);
+
+  function logout() {
+    Cookies.remove("user_token");
+
+    router.reload();
+  }
 
   return (
     <div className="bg-white shadow-md m-2 rounded-lg flex flex-col p-5">
@@ -149,17 +177,38 @@ function MobileNavBar({ user }) {
                     </a>
                   </Link>
                 ) : null}
-
-                {/* TODO: Redireccion al perfil */}
-                <Link href={"/"}>
+                <button
+                  onClick={(e) => logout()}
+                  className="font-roboto text-sm text-white bg-red-600 rounded-md py-1 px-4"
+                >
+                  Cerrar Sesion
+                </button>
+                <Link
+                  href={{
+                    pathname: "/usuario/[idUsuario]",
+                    query: { idUsuario: user.data.id },
+                  }}
+                >
                   <a className="flex items-center">
                     <p className="mx-2 font-roboto   text-sm capitalize font-medium text-gray-700">
                       {user.data.nombre} {user.data.apellidos}
                     </p>
                     <div className="w-8 h-8 bg-black overflow-hidden border-2 border-gray-400 rounded-full">
-                      {
-                        //TODO: Obtener imagen del perfil
-                      }
+                      <Image
+                        src={
+                          user.data.img !== ""
+                            ? IMG_URL +
+                              `img_usuarios/${user.data.id}/${user.data.img}`
+                            : "https://via.placeholder.com/468?text=Imagen+no+disponible"
+                        }
+                        alt={user.data.img ?? "placeholder"}
+                        layout="responsive"
+                        width={1}
+                        height={1}
+                        objectFit="cover"
+                        className="rounded-full"
+                        priority={true}
+                      />
                     </div>
                   </a>
                 </Link>

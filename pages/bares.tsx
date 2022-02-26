@@ -17,7 +17,12 @@ export default function Bares({ user }) {
 
   const { data, error } = useSWR(
     `/api/bares?limit=999999&offset=0&key=${key.get()}&order=${order.get()}&direction=ASC`,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   return (

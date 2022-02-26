@@ -98,7 +98,7 @@ export default function BarForm({ Bardata }: any) {
       const data = await response.data;
     }
   }
-
+  //TODO: Revalidar llamada cada vez que se borre una imagen
   async function removeImg(img: any, e: any) {
     e.currentTarget.parentNode.style.display = "none";
 
