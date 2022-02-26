@@ -23,3 +23,7 @@
     @apply px-5 py-2 block bg-green-400 text-sm font-medium text-white rounded-md hover:bg-gradient-to-tr hover:from-green-400 hover:to-green-500;
   }
 }
+
+.leaflet-container {
+  @apply h-[600px] w-full rounded-md shadow-2xl max-w-7xl mx-auto;
+}
