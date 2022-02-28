@@ -140,7 +140,6 @@ export default function Usuario({ user }) {
                       url: "/api/updateUser",
                       data: values,
                     });
-
                     if (acceptedFiles[0]) {
                       const form = new FormData();
                       form.append(`file`, acceptedFiles[0]);
@@ -151,7 +150,7 @@ export default function Usuario({ user }) {
                       });
                     }
 
-                    await router.push("/home", "/home");
+                    await router.reload();
                   }}
                 >
                   {({

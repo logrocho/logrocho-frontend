@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
   if (!bar.data) {
     return {
       notFound: true,
-    }
+    };
   }
 
   const { user_token } = context.req.cookies;
@@ -155,7 +155,11 @@ export default function BarDetail({ bar, user }) {
                               `/img_pinchos/${pincho.id}/${pincho.img[0].filename}`
                             : `https://via.placeholder.com/468?text=Imagen+no+disponible`
                         }
-                        alt={`${pincho.img.length > 0 ? pincho.img[0].filename : "placeholder"}`}
+                        alt={`${
+                          pincho.img.length > 0
+                            ? pincho.img[0].filename
+                            : "placeholder"
+                        }`}
                         layout="fill"
                         objectFit="cover"
                         objectPosition="left"
@@ -169,7 +173,7 @@ export default function BarDetail({ bar, user }) {
                             🥜{pincho.nombre}
                           </p>
                           <p className="font-roboto text-base">
-                            ⭐{pincho.puntuacion}
+                            ⭐{Math.round(pincho.puntuacion * 100) / 100}
                           </p>
                         </div>
                         <Link

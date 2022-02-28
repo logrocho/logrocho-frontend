@@ -21,7 +21,8 @@ export default function Registro() {
       .required("El nombre no puede estar vacio"),
 
     apellidos: Yup.string()
-      .matches(/^[A-Za-z]+$/, "Los apellidos no pueden estar vacios")
+      .matches(/^[a-z ,.'-]+$/i, "Los apellidos no pueden estar vacios")
+      .matches(/^\S/, "Los apellidos no pueden empezar espacios")
       .required("Los apellidos no pueden estar vacios"),
 
     correo: Yup.string()

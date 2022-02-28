@@ -15,14 +15,20 @@ import { HiLocationMarker } from "react-icons/hi";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import ResenaComponent from "../../components/ResenaComponent";
 import { useState } from "@hookstate/core";
+import ReactStars from "react-rating-stars-component";
 
 export async function getServerSideProps(context) {
   const { idPincho } = context.query;
+
+  const { user_token } = context.req.cookies;
 
   const responsePincho = await axios({
     method: "GET",
     baseURL: API_URL,
     url: `pincho?id=${idPincho}`,
+    headers: {
+      Authorization: `Bearer ${user_token ?? ""}`,
+    },
   });
 
   const pincho = responsePincho.data;
@@ -32,8 +38,6 @@ export async function getServerSideProps(context) {
       notFound: true,
     };
   }
-
-  const { user_token } = context.req.cookies;
 
   const tokenData = await getTokenData(user_token);
 
@@ -49,9 +53,37 @@ export async function getServerSideProps(context) {
 }
 
 export default function PinchoDetail({ pincho, user }) {
-  const notaPinchoSlider = useState(1);
+  const notaPinchoSlider = useState(0);
 
-  function setNotaPincho() {}
+  const router = useRouter();
+
+  function notaPincho(nuevaNota) {
+    notaPinchoSlider.set(Number.parseInt(nuevaNota));
+  }
+
+  async function setNotaPincho() {
+    if (pincho.data.puntuacion_usuario) {
+      await axios({
+        method: "POST",
+        url: "/api/updateNotaPincho",
+        data: {
+          pincho: pincho.data.id,
+          puntuacion: notaPinchoSlider.get(),
+        },
+      });
+    } else {
+      await axios({
+        method: "POST",
+        url: "/api/setNotaPincho",
+        data: {
+          pincho: pincho.data.id,
+          puntuacion: notaPinchoSlider.get(),
+        },
+      });
+    }
+
+    router.reload();
+  }
 
   return (
     <React.Fragment>
@@ -123,7 +155,7 @@ export default function PinchoDetail({ pincho, user }) {
                   <div className="flex items-center space-x-2">
                     <p className="text-gray-900 font-roboto">Puntuacion:</p>
                     <p className="text-gray-900 font-roboto font-light">
-                      {pincho.data.puntuacion}
+                      {Math.round(pincho.data.puntuacion * 100) / 100}
                     </p>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -135,28 +167,26 @@ export default function PinchoDetail({ pincho, user }) {
                 </div>
                 <div className="p-5 rounded-md border-2 shadow-md space-y-2">
                   <p className="font-roboto text-lg">Indica la nota (1 al 5)</p>
-                  <div className="flex items-center gap-x-2">
-                    <input
-                      type="range"
-                      name="notaPincho"
-                      id="notaPincho"
-                      step={1}
-                      min={1}
-                      max={5}
-                      defaultValue={1}
-                      onChange={(e) =>
-                        notaPinchoSlider.set(Number.parseInt(e.target.value))
-                      }
-                    />
-                    <p className="font-roboto font-black">
-                      {notaPinchoSlider.get()}
-                    </p>
-                  </div>
+                  <ReactStars
+                    count={5}
+                    value={Number.parseInt(pincho.data.puntuacion_usuario)}
+                    onChange={notaPincho}
+                    size={30}
+                    isHalf={false}
+                    activeColor="#ffd700"
+                  />
                   <button
                     onClick={(e) => setNotaPincho()}
-                    className="text-white bg-green-600 rounded-md shadow-md w-full py-1"
+                    disabled={!user.status || notaPinchoSlider.get() === 0}
+                    className={`${
+                      !user.status || notaPinchoSlider.get() === 0
+                        ? "text-white bg-green-600 opacity-20 cursor-not-allowed rounded-md shadow-md w-full py-1"
+                        : "text-white bg-green-600 rounded-md cursor-pointer shadow-md w-full py-1"
+                    }`}
                   >
-                    Introduce tu puntuacion
+                    {user.status
+                      ? "Introduce tu puntuacion"
+                      : "Inicia sesion para valorar"}
                   </button>
                 </div>
               </div>
