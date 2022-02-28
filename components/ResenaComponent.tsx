@@ -27,7 +27,7 @@ export default function ResenaComponent({ resena }) {
               {resena.usuario.nombre_apellidos}
             </p>
           </div>
-          <p className="font-roboto">{resena.puntuacion}</p>
+          <p className="font-roboto">{resena.puntuacion}💗</p>
         </div>
         <div className="p-2">
           <p className="font-roboto">{resena.mensaje}</p>

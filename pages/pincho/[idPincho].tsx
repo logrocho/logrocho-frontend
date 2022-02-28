@@ -14,6 +14,7 @@ import { AiFillStar, AiOutlineArrowRight } from "react-icons/ai";
 import { HiLocationMarker } from "react-icons/hi";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import ResenaComponent from "../../components/ResenaComponent";
+import { useState } from "@hookstate/core";
 
 export async function getServerSideProps(context) {
   const { idPincho } = context.query;
@@ -29,7 +30,7 @@ export async function getServerSideProps(context) {
   if (!pincho.data) {
     return {
       notFound: true,
-    }
+    };
   }
 
   const { user_token } = context.req.cookies;
@@ -48,7 +49,10 @@ export async function getServerSideProps(context) {
 }
 
 export default function PinchoDetail({ pincho, user }) {
-  console.log(pincho);
+  const notaPinchoSlider = useState(1);
+
+  function setNotaPincho() {}
+
   return (
     <React.Fragment>
       <Head>
@@ -128,6 +132,32 @@ export default function PinchoDetail({ pincho, user }) {
                       {pincho.data.ingredientes}
                     </p>
                   </div>
+                </div>
+                <div className="p-5 rounded-md border-2 shadow-md space-y-2">
+                  <p className="font-roboto text-lg">Indica la nota (1 al 5)</p>
+                  <div className="flex items-center gap-x-2">
+                    <input
+                      type="range"
+                      name="notaPincho"
+                      id="notaPincho"
+                      step={1}
+                      min={1}
+                      max={5}
+                      defaultValue={1}
+                      onChange={(e) =>
+                        notaPinchoSlider.set(Number.parseInt(e.target.value))
+                      }
+                    />
+                    <p className="font-roboto font-black">
+                      {notaPinchoSlider.get()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={(e) => setNotaPincho()}
+                    className="text-white bg-green-600 rounded-md shadow-md w-full py-1"
+                  >
+                    Introduce tu puntuacion
+                  </button>
                 </div>
               </div>
               <div className="w-full lg:w-1/2 m-3 space-y-4">
