@@ -34,7 +34,7 @@ export default function PinchoComponent({ pincho }) {
               {pincho.nombre}
             </p>
             <p className="flex items-center ml-auto font-roboto text-gray-900">
-              ⭐ {pincho.puntuacion}
+              ⭐ {Math.round(pincho.puntuacion * 100) / 100}
             </p>
           </div>
         </div>

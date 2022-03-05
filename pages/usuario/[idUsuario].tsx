@@ -88,7 +88,6 @@ export default function Usuario({ user }) {
         <meta name="description" content="Logrocho by Sergio Malagon" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>{JSON.stringify(user)}</div>
       <Layout user={user}>
         <div className="max-w-5xl mx-auto py-12 px-2">
           <div className="bg-white py-12 rounded-md shadow-md border">

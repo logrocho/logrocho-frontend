@@ -1,8 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { IMG_URL } from "../lib/const";
+import { useState } from "@hookstate/core";
+import axios from "axios";
 
 export default function ResenaComponent({ resena }) {
+  const isLiked = useState(resena.user_likes);
+
+  const resenaPuntuacion = useState(resena.puntuacion);
+
+  async function setLike() {
+    await axios({
+      method: "POST",
+      url: "/api/setLikeResena",
+      data: {
+        id: resena.id,
+      },
+    });
+
+    isLiked.set(true);
+    resenaPuntuacion.set(Number.parseInt(resenaPuntuacion.get()) + 1);
+  }
+
+  async function removeLike() {
+    await axios({
+      method: "POST",
+      url: "/api/removeLikeResena",
+      data: {
+        id: resena.id,
+      },
+    });
+
+    isLiked.set(false);
+    resenaPuntuacion.set(Number.parseInt(resenaPuntuacion.get()) - 1);
+  }
+
   return (
     <React.Fragment>
       <div className="bg-white p-5 rounded-md shadow-md border flex flex-col">
@@ -27,7 +59,14 @@ export default function ResenaComponent({ resena }) {
               {resena.usuario.nombre_apellidos}
             </p>
           </div>
-          <p className="font-roboto">{resena.puntuacion}💗</p>
+          <div className="flex items-baseline gap-x-1">
+            <p className="font-roboto">{resenaPuntuacion.get()}</p>
+            {isLiked.get() ? (
+              <button onClick={(e) => removeLike()}>❤️</button>
+            ) : (
+              <button onClick={(e) => setLike()}>🤍</button>
+            )}
+          </div>
         </div>
         <div className="p-2">
           <p className="font-roboto">{resena.mensaje}</p>

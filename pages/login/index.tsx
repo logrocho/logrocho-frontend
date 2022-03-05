@@ -26,7 +26,16 @@ function Login(): JSX.Element {
       </Head>
       <div className="py-12 min-h-screen flex flex-col justify-center">
         <div className="max-w-md w-full mx-auto">
-          {/* TODO: rehacer el mensaje de error */}
+          {loginError.get() ? (
+            <div className="px-10 py-5 border border-red-600 bg-red-300 rounded-md my-10 space-y-1">
+              <p className="uppercase bg-transparent text-2xl text-red-600 font-roboto font-bold text-center">
+                Error, usuario inexistente
+              </p>
+              <p className="bg-transparent text-xl text-red-600 font-roboto font-light text-center">
+                Comprueba que los datos introducidos sean correctos
+              </p>
+            </div>
+          ) : null}
           <h1 className="text-black font-roboto text-center font-black text-5xl mb-2">
             Logrocho.com
           </h1>
